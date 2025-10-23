@@ -74,9 +74,16 @@
                 </div>
 
                 <div class="nav-section">
-                    <h3 class="nav-title">Learning Paths</h3>
+                    <h3 class="nav-title">My Topics</h3>
+                    <ul class="nav-list" id="myTopicsList">
+                        <!-- User's learning topics will be inserted here -->
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="nav-title">Featured Paths</h3>
                     <ul class="nav-list" id="navList">
-                        <!-- Navigation items will be inserted here -->
+                        <!-- Pre-built navigation items will be inserted here -->
                     </ul>
                 </div>
             </nav>
@@ -91,12 +98,27 @@
                         <h1 class="welcome-title animate-fade-in">Welcome to LearnHub! 🎉</h1>
                         <p class="welcome-subtitle animate-fade-in delay-1">Your personal AI-powered learning companion</p>
                         <p class="welcome-text animate-fade-in delay-2">
-                            Learn at your own pace with interactive modules, get instant help from your AI tutor,
-                            and track your progress as you level up. No boring textbooks here!
+                            Learn ANYTHING you want - history, science, languages, cooking, coding, and more!
+                            Just search for a topic and your AI tutor will create a personalized learning experience.
                         </p>
-                        <button class="btn btn-primary btn-large animate-fade-in delay-3" onclick="app.startLearning()">
-                            Start Learning 🚀
-                        </button>
+
+                        <!-- Universal Search Box -->
+                        <div class="search-container animate-fade-in delay-3">
+                            <div class="search-box">
+                                <input
+                                    type="text"
+                                    id="topicSearch"
+                                    class="search-input"
+                                    placeholder="What do you want to learn today? (e.g., 'Ancient Rome', 'Quantum Physics', 'French Cooking')"
+                                    onkeydown="if(event.key==='Enter') app.searchTopic()"
+                                />
+                                <button class="btn btn-primary search-btn" onclick="app.searchTopic()">
+                                    <span>Learn This</span>
+                                    <span class="icon">🚀</span>
+                                </button>
+                            </div>
+                            <p class="search-hint">Or explore our featured learning paths below</p>
+                        </div>
                     </div>
 
                     <div class="features-grid animate-fade-in delay-4">

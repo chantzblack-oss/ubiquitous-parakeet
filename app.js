@@ -92,7 +92,8 @@ class LearnHub {
             completedModules: [],
             completedSections: {},
             unlockedAchievements: [],
-            quizScores: {}
+            quizScores: {},
+            userTopics: []  // Store user-searched topics
         };
 
         const saved = localStorage.getItem('userProgress');
@@ -641,6 +642,211 @@ class LearnHub {
                 </li>
             `;
         }).join('');
+
+        // Also render user topics
+        this.renderUserTopics();
+    }
+
+    renderUserTopics() {
+        const topicsList = document.getElementById('myTopicsList');
+        if (!topicsList) return;
+
+        if (this.userProgress.userTopics.length === 0) {
+            topicsList.innerHTML = '<li class="nav-item"><p style="padding: 1rem; color: var(--text-tertiary); font-size: 0.875rem; text-align: center;">Search for topics above to start learning!</p></li>';
+            return;
+        }
+
+        topicsList.innerHTML = this.userProgress.userTopics.map(topic => {
+            return `
+                <li class="nav-item">
+                    <a class="nav-link ${this.currentModule?.id === topic.id ? 'active' : ''}"
+                       onclick="app.loadDynamicTopic('${topic.id}')">
+                        <span class="nav-link-icon">${topic.icon || '📖'}</span>
+                        <div class="nav-link-content">
+                            <div class="nav-link-title">${topic.title}</div>
+                            <div class="nav-link-subtitle">Custom Topic</div>
+                        </div>
+                    </a>
+                </li>
+            `;
+        }).join('');
+    }
+
+    // Universal Topic Search
+    async searchTopic() {
+        const searchInput = document.getElementById('topicSearch');
+        const query = searchInput.value.trim();
+
+        if (!query) {
+            this.showToast('Please enter a topic to learn about', 'info');
+            return;
+        }
+
+        // Check API key
+        if (!this.CLAUDE_API_KEY) {
+            this.showToast('Please set your Claude API key first', 'error');
+            this.checkApiKey();
+            return;
+        }
+
+        // Show loading
+        searchInput.disabled = true;
+        this.showToast('Creating your personalized lesson... ⏳', 'info');
+
+        try {
+            // Generate lesson with AI
+            const lesson = await this.generateLessonWithAI(query);
+
+            // Save to user topics
+            this.userProgress.userTopics.push(lesson);
+            this.saveProgress();
+
+            // Load the lesson
+            this.loadDynamicTopic(lesson.id);
+
+            // Clear search
+            searchInput.value = '';
+
+            this.showToast('Lesson created! Happy learning! 🎉', 'success');
+
+        } catch (error) {
+            console.error('Topic search error:', error);
+            this.showToast('Failed to create lesson. Please try again.', 'error');
+        } finally {
+            searchInput.disabled = false;
+        }
+    }
+
+    async generateLessonWithAI(topic) {
+        const response = await fetch(this.CLAUDE_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': this.CLAUDE_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 4000,
+                messages: [{
+                    role: 'user',
+                    content: `Create an interactive learning lesson about "${topic}".
+
+You are a friendly, enthusiastic tutor. Structure the lesson as JSON with this EXACT format:
+
+{
+  "title": "Topic Title",
+  "icon": "relevant emoji",
+  "subtitle": "short engaging description",
+  "description": "what learner will know after",
+  "sections": [
+    {
+      "title": "Section Name",
+      "icon": "emoji",
+      "whyCare": "Why this matters in real life (2-3 sentences)",
+      "keyPoints": [
+        "Point 1 explained conversationally",
+        "Point 2 with real-world relevance",
+        "Point 3 with practical examples"
+      ],
+      "realWorldExample": "Concrete example they can relate to",
+      "practiceQuestion": {
+        "question": "Scenario-based question",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctIndex": 0,
+        "explanation": "Why this answer is correct"
+      }
+    }
+  ]
+}
+
+Make it:
+- Conversational like explaining to a friend
+- Include 2-3 sections
+- Use real-world examples people care about
+- Make practice questions interesting scenarios
+- Be engaging and fun!
+
+Return ONLY valid JSON, no other text.`
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const aiResponse = data.content[0].text;
+
+        // Parse JSON from AI response
+        let lessonData;
+        try {
+            // Try to extract JSON if there's extra text
+            const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+            lessonData = JSON.parse(jsonMatch ? jsonMatch[0] : aiResponse);
+        } catch (e) {
+            throw new Error('Invalid lesson format from AI');
+        }
+
+        // Create module structure
+        const moduleId = `topic_${Date.now()}`;
+        return {
+            id: moduleId,
+            title: lessonData.title,
+            icon: lessonData.icon || '📖',
+            subtitle: lessonData.subtitle,
+            description: lessonData.description,
+            duration: 'Custom',
+            difficulty: 'AI-Generated',
+            isDynamic: true,
+            sections: lessonData.sections.map((section, idx) => ({
+                id: `section_${idx}`,
+                title: section.title,
+                icon: section.icon || '📝',
+                content: {
+                    whyCare: section.whyCare,
+                    concepts: section.keyPoints.map((point, i) => ({
+                        title: `Key Point ${i + 1}`,
+                        preview: point.substring(0, 60) + '...',
+                        details: point
+                    })),
+                    examples: [{
+                        title: 'Real-World Example',
+                        code: '',
+                        explanation: section.realWorldExample
+                    }],
+                    quiz: section.practiceQuestion
+                }
+            }))
+        };
+    }
+
+    loadDynamicTopic(topicId) {
+        // Find in user topics
+        const topic = this.userProgress.userTopics.find(t => t.id === topicId);
+        if (!topic) return;
+
+        this.currentModule = topic;
+        this.currentSection = 0;
+
+        // Hide welcome screen
+        document.getElementById('welcomeScreen').classList.add('hidden');
+        document.getElementById('moduleContainer').classList.remove('hidden');
+
+        // Render module
+        this.renderModule();
+
+        // Update navigation
+        this.renderNavigation();
+
+        // Close sidebar on mobile
+        if (window.innerWidth <= 1024) {
+            this.closeSidebar();
+        }
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     loadModule(moduleId) {
