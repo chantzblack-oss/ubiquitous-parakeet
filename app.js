@@ -3,15 +3,10 @@
 
 class LearnHub {
     constructor() {
-        // Configuration
-        this.CLAUDE_API_KEY = localStorage.getItem('claudeApiKey') || '';
-        this.CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
-
         // State
         this.currentModule = null;
         this.currentSection = 0;
         this.isDarkMode = localStorage.getItem('darkMode') === 'true';
-        this.isChatOpen = false;
         this.isSidebarOpen = false;
         this.speechSynthesis = window.speechSynthesis;
         this.currentUtterance = null;
@@ -47,9 +42,6 @@ class LearnHub {
         this.renderNavigation();
         this.renderBadges();
 
-        // Check for API key
-        this.checkApiKey();
-
         // Update streak
         this.updateStreak();
     }
@@ -58,28 +50,8 @@ class LearnHub {
         // Dark mode toggle
         document.getElementById('darkModeToggle')?.addEventListener('click', () => this.toggleDarkMode());
 
-        // Chat toggle
-        document.getElementById('chatToggle')?.addEventListener('click', () => this.toggleChat());
-        document.getElementById('closeChatBtn')?.addEventListener('click', () => this.toggleChat());
-
         // Mobile menu toggle
         document.getElementById('mobileMenuToggle')?.addEventListener('click', () => this.toggleSidebar());
-
-        // Chat functionality
-        document.getElementById('sendChatBtn')?.addEventListener('click', () => this.sendChatMessage());
-        const chatInput = document.getElementById('chatInput');
-        chatInput?.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.sendChatMessage();
-            }
-        });
-
-        // Auto-resize chat input
-        chatInput?.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-        });
     }
 
     // Progress Management
@@ -220,13 +192,6 @@ class LearnHub {
                 description: 'Get a perfect score on any quiz',
                 icon: '🎓',
                 condition: () => Object.values(this.userProgress.quizScores).some(score => score === 100)
-            },
-            {
-                id: 'chat_curious',
-                name: 'Curious Mind',
-                description: 'Ask your AI tutor a question',
-                icon: '🤔',
-                condition: () => this.userProgress.chatMessages > 0
             }
         ];
     }
@@ -741,10 +706,6 @@ class LearnHub {
                         <p class="concept-preview">${concept.preview}</p>
                         <div class="concept-details hidden">
                             <p>${concept.details}</p>
-                            <button class="btn btn-primary btn-sm ask-claude-btn"
-                                    onclick="event.stopPropagation(); app.askAboutConcept('${concept.title}')">
-                                Ask Claude 🤖
-                            </button>
                         </div>
                     </div>
                 `;
@@ -930,161 +891,6 @@ class LearnHub {
         this.renderNavigation();
         document.getElementById('topProgressFill').style.width = '0%';
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // AI Chat
-    checkApiKey() {
-        if (!this.CLAUDE_API_KEY) {
-            // Prompt for API key
-            setTimeout(() => {
-                const key = prompt('Enter your Claude API key to enable AI tutoring:\n\n(Get one at: https://console.anthropic.com/)');
-                if (key) {
-                    this.CLAUDE_API_KEY = key;
-                    localStorage.setItem('claudeApiKey', key);
-                    this.showToast('API key saved! AI tutor is ready.', 'success');
-                }
-            }, 2000);
-        }
-    }
-
-    toggleChat() {
-        this.isChatOpen = !this.isChatOpen;
-        const sidebar = document.getElementById('chatSidebar');
-
-        if (this.isChatOpen) {
-            sidebar.classList.add('open');
-        } else {
-            sidebar.classList.remove('open');
-        }
-    }
-
-    async sendChatMessage() {
-        const input = document.getElementById('chatInput');
-        const message = input.value.trim();
-
-        if (!message) return;
-
-        // Check API key
-        if (!this.CLAUDE_API_KEY) {
-            this.showToast('Please set your Claude API key first', 'error');
-            this.checkApiKey();
-            return;
-        }
-
-        // Clear input
-        input.value = '';
-        input.style.height = 'auto';
-
-        // Add user message
-        this.addChatMessage(message, 'user');
-
-        // Track for achievement
-        this.userProgress.chatMessages = (this.userProgress.chatMessages || 0) + 1;
-        this.saveProgress();
-        this.checkAchievements();
-
-        // Show typing indicator
-        const typingId = this.showTypingIndicator();
-
-        try {
-            // Call Claude API
-            const response = await fetch(this.CLAUDE_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': this.CLAUDE_API_KEY,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: 'claude-3-5-sonnet-20241022',
-                    max_tokens: 1024,
-                    messages: [{
-                        role: 'user',
-                        content: `You are a friendly, enthusiastic tutor helping someone learn programming. Be conversational and informal (like explaining to a friend). Keep responses concise but helpful. Use examples when possible.\n\nStudent question: ${message}\n\n${this.currentModule ? `Context: They're currently learning about "${this.currentModule.sections[this.currentSection].title}" in the "${this.currentModule.title}" module.` : ''}`
-                    }]
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
-            }
-
-            const data = await response.json();
-            const reply = data.content[0].text;
-
-            // Remove typing indicator
-            this.removeTypingIndicator(typingId);
-
-            // Add AI response
-            this.addChatMessage(reply, 'bot');
-
-        } catch (error) {
-            console.error('Chat error:', error);
-            this.removeTypingIndicator(typingId);
-            this.addChatMessage('Oops! I had trouble connecting. Make sure your API key is valid and you have internet connection.', 'bot');
-            this.showToast('Failed to get AI response', 'error');
-        }
-    }
-
-    addChatMessage(text, sender) {
-        const messagesContainer = document.getElementById('chatMessages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${sender}-message`;
-        messageDiv.innerHTML = `
-            <div class="message-avatar">${sender === 'user' ? '👤' : '🤖'}</div>
-            <div class="message-content">
-                <p>${this.formatChatMessage(text)}</p>
-            </div>
-        `;
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    showTypingIndicator() {
-        const messagesContainer = document.getElementById('chatMessages');
-        const typingDiv = document.createElement('div');
-        const id = `typing-${Date.now()}`;
-        typingDiv.id = id;
-        typingDiv.className = 'chat-message bot-message';
-        typingDiv.innerHTML = `
-            <div class="message-avatar">🤖</div>
-            <div class="message-content">
-                <div class="typing-indicator">
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                </div>
-            </div>
-        `;
-        messagesContainer.appendChild(typingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        return id;
-    }
-
-    removeTypingIndicator(id) {
-        const element = document.getElementById(id);
-        if (element) element.remove();
-    }
-
-    formatChatMessage(text) {
-        // Simple markdown-like formatting
-        return text
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`(.*?)`/g, '<code>$1</code>')
-            .replace(/\n/g, '<br>');
-    }
-
-    askAboutConcept(conceptTitle) {
-        // Open chat
-        if (!this.isChatOpen) {
-            this.toggleChat();
-        }
-
-        // Pre-fill question
-        const input = document.getElementById('chatInput');
-        input.value = `Can you explain ${conceptTitle} in more detail with examples?`;
-        input.focus();
     }
 
     // Text-to-Speech
