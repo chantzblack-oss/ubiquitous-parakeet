@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="Interactive learning platform with gamification">
+    <meta name="theme-color" content="#6366f1">
+    <title>LearnHub - Interactive Learning Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <h1 class="logo">🚀 LearnHub</h1>
+            <div class="header-controls">
+                <button class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode">
+                    <span class="icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="top-progress-bar">
+        <div class="progress-fill" id="topProgressFill"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <nav class="nav">
+                <div class="nav-section">
+                    <h3 class="nav-title">Your Progress</h3>
+                    <div class="user-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Level</div>
+                                <div class="stat-value" id="userLevel">1</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">✨</div>
+                            <div class="stat-info">
+                                <div class="stat-label">XP</div>
+                                <div class="stat-value" id="userXP">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Streak</div>
+                                <div class="stat-value" id="userStreak">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="xp-progress">
+                        <div class="xp-progress-fill" id="xpProgressFill"></div>
+                    </div>
+                    <div class="xp-text" id="xpText">0 / 100 XP to next level</div>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="nav-title">Achievements</h3>
+                    <div class="badges-container" id="badgesContainer">
+                        <!-- Badges will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="nav-title">Learning Paths</h3>
+                    <ul class="nav-list" id="navList">
+                        <!-- Navigation items will be inserted here -->
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content" id="mainContent">
+            <div class="container">
+                <!-- Welcome Screen -->
+                <section class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-hero">
+                        <h1 class="welcome-title animate-fade-in">Welcome to LearnHub! 🎉</h1>
+                        <p class="welcome-subtitle animate-fade-in delay-1">Your personal interactive learning companion</p>
+                        <p class="welcome-text animate-fade-in delay-2">
+                            Learn at your own pace with interactive modules, hands-on challenges,
+                            and track your progress as you level up. No boring textbooks here!
+                        </p>
+                        <button class="btn btn-primary btn-large animate-fade-in delay-3" onclick="app.startLearning()">
+                            Start Learning 🚀
+                        </button>
+                    </div>
+
+                    <div class="features-grid animate-fade-in delay-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎮</div>
+                            <h3>Gamified</h3>
+                            <p>Earn XP, unlock badges, and level up as you learn</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <h3>Mobile-First</h3>
+                            <p>Learn anywhere, anytime on any device</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h3>Interactive</h3>
+                            <p>Hands-on challenges and real-world scenarios</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔊</div>
+                            <h3>Text-to-Speech</h3>
+                            <p>Listen to lessons while multitasking</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Learning Module Container -->
+                <section class="module-container hidden" id="moduleContainer">
+                    <!-- Module content will be inserted here dynamically -->
+                </section>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <span class="hamburger"></span>
+    </button>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Modal for Achievements -->
+    <div class="modal-overlay hidden" id="achievementModal">
+        <div class="modal achievement-modal">
+            <div class="achievement-content">
+                <div class="achievement-icon-large" id="achievementIcon">🏆</div>
+                <h2 class="achievement-title">Achievement Unlocked!</h2>
+                <h3 class="achievement-name" id="achievementName"></h3>
+                <p class="achievement-description" id="achievementDescription"></p>
+                <button class="btn btn-primary" onclick="app.closeAchievementModal()">Awesome!</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
