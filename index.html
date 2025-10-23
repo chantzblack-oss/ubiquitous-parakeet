@@ -74,6 +74,13 @@
                 </div>
 
                 <div class="nav-section">
+                    <h3 class="nav-title">Bookmarks</h3>
+                    <ul class="nav-list" id="bookmarksList">
+                        <!-- Bookmarked topics will be inserted here -->
+                    </ul>
+                </div>
+
+                <div class="nav-section">
                     <h3 class="nav-title">My Topics</h3>
                     <ul class="nav-list" id="myTopicsList">
                         <!-- User's learning topics will be inserted here -->
@@ -118,6 +125,15 @@
                                 </button>
                             </div>
 
+                            <div class="quick-actions">
+                                <button class="btn btn-secondary" onclick="app.learnSomethingRandom()">
+                                    🎲 Surprise Me!
+                                </button>
+                                <button class="btn btn-secondary" onclick="app.showDailyTopic()">
+                                    ⭐ Topic of the Day
+                                </button>
+                            </div>
+
                             <div class="divider-text">OR</div>
 
                             <!-- File Upload Section -->
@@ -138,12 +154,37 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <p class="search-hint">Or explore our featured learning paths below</p>
                         </div>
                     </div>
 
-                    <div class="features-grid animate-fade-in delay-4">
+                    <!-- Topic Suggestions -->
+                    <div class="inspiration-section animate-fade-in delay-4">
+                        <h3 class="inspiration-title">🌟 Discover Something New</h3>
+
+                        <!-- Category Filters -->
+                        <div class="category-filters">
+                            <button class="category-btn active" onclick="app.filterSuggestions('all')">All</button>
+                            <button class="category-btn" onclick="app.filterSuggestions('science')">🔬 Science</button>
+                            <button class="category-btn" onclick="app.filterSuggestions('history')">📜 History</button>
+                            <button class="category-btn" onclick="app.filterSuggestions('arts')">🎨 Arts</button>
+                            <button class="category-btn" onclick="app.filterSuggestions('tech')">💻 Tech</button>
+                            <button class="category-btn" onclick="app.filterSuggestions('culture')">🌍 Culture</button>
+                        </div>
+
+                        <!-- Suggestion Cards -->
+                        <div class="suggestion-cards" id="suggestionCards">
+                            <!-- Cards will be inserted dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Did You Know Section -->
+                    <div class="did-you-know-section animate-fade-in delay-5" id="didYouKnowSection">
+                        <!-- Will be populated by JS -->
+                    </div>
+
+                    <p class="search-hint">Or explore our featured learning paths below</p>
+
+                    <div class="features-grid animate-fade-in delay-6">
                         <div class="feature-card">
                             <div class="feature-icon">🤖</div>
                             <h3>AI Tutor</h3>

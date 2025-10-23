@@ -25,6 +25,11 @@ class LearnHub {
         // Achievements
         this.achievements = this.createAchievements();
 
+        // Discovery Features
+        this.topicSuggestions = this.createTopicSuggestions();
+        this.didYouKnowFacts = this.createDidYouKnowFacts();
+        this.skippedThisSession = []; // Track skipped suggestions
+
         // Initialize
         this.init();
     }
@@ -55,6 +60,11 @@ class LearnHub {
 
         // Set up file upload drag and drop
         this.setupFileUpload();
+
+        // Initialize discovery features
+        this.renderSuggestionCards();
+        this.renderBookmarks();
+        this.renderDidYouKnow();
     }
 
     setupFileUpload() {
@@ -130,7 +140,8 @@ class LearnHub {
             completedSections: {},
             unlockedAchievements: [],
             quizScores: {},
-            userTopics: []  // Store user-searched topics
+            userTopics: [],  // Store user-searched topics
+            bookmarkedTopics: []  // Store bookmarked topic suggestions
         };
 
         const saved = localStorage.getItem('userProgress');
@@ -655,6 +666,258 @@ class LearnHub {
         };
     }
 
+    // Discovery & Inspiration Features
+    createTopicSuggestions() {
+        return [
+            // Science
+            { id: 'quantum_entanglement', title: 'Quantum Entanglement', icon: '⚛️', category: 'science', description: 'Spooky action at a distance - Einstein\'s nightmare explained' },
+            { id: 'crispr_gene_editing', title: 'CRISPR Gene Editing', icon: '🧬', category: 'science', description: 'The revolutionary technology editing the code of life' },
+            { id: 'black_holes', title: 'Black Holes', icon: '🕳️', category: 'science', description: 'Where gravity becomes so strong, not even light can escape' },
+            { id: 'neuroplasticity', title: 'Neuroplasticity', icon: '🧠', category: 'science', description: 'How your brain rewires itself throughout your life' },
+            { id: 'photosynthesis', title: 'Photosynthesis', icon: '🌱', category: 'science', description: 'The process that powers nearly all life on Earth' },
+
+            // History
+            { id: 'ancient_rome', title: 'Ancient Rome', icon: '🏛️', category: 'history', description: 'The empire that shaped Western civilization' },
+            { id: 'silk_road', title: 'The Silk Road', icon: '🐫', category: 'history', description: 'Ancient trade routes that connected East and West' },
+            { id: 'renaissance', title: 'The Renaissance', icon: '🎨', category: 'history', description: 'The rebirth of art, science, and human potential' },
+            { id: 'industrial_revolution', title: 'Industrial Revolution', icon: '⚙️', category: 'history', description: 'How machines transformed human society forever' },
+            { id: 'space_race', title: 'The Space Race', icon: '🚀', category: 'history', description: 'The epic competition that took humanity to the Moon' },
+
+            // Arts
+            { id: 'color_theory', title: 'Color Theory', icon: '🎨', category: 'arts', description: 'The science and art of how colors interact' },
+            { id: 'music_composition', title: 'Music Composition', icon: '🎵', category: 'arts', description: 'The craft of creating beautiful melodies and harmonies' },
+            { id: 'photography_basics', title: 'Photography Basics', icon: '📸', category: 'arts', description: 'Capture the world through your lens' },
+            { id: 'storytelling', title: 'Storytelling Techniques', icon: '📖', category: 'arts', description: 'The ancient art of captivating an audience' },
+            { id: 'animation_principles', title: 'Animation Principles', icon: '🎬', category: 'arts', description: 'The 12 principles that bring drawings to life' },
+
+            // Tech
+            { id: 'blockchain', title: 'Blockchain Technology', icon: '⛓️', category: 'tech', description: 'The technology behind Bitcoin and beyond' },
+            { id: 'machine_learning', title: 'Machine Learning Basics', icon: '🤖', category: 'tech', description: 'How computers learn from data without being programmed' },
+            { id: 'cybersecurity', title: 'Cybersecurity Fundamentals', icon: '🔒', category: 'tech', description: 'Protect yourself in the digital world' },
+            { id: 'cloud_computing', title: 'Cloud Computing', icon: '☁️', category: 'tech', description: 'Why the internet is becoming one giant computer' },
+            { id: 'quantum_computing', title: 'Quantum Computing', icon: '💻', category: 'tech', description: 'The future of computing is here - and it\'s weird' },
+
+            // Culture
+            { id: 'japanese_tea_ceremony', title: 'Japanese Tea Ceremony', icon: '🍵', category: 'culture', description: 'The meditative art of preparing and serving tea' },
+            { id: 'mythology', title: 'Greek Mythology', icon: '⚡', category: 'culture', description: 'Gods, heroes, and monsters of ancient Greece' },
+            { id: 'sustainable_living', title: 'Sustainable Living', icon: '🌍', category: 'culture', description: 'How to reduce your environmental footprint' },
+            { id: 'mindfulness', title: 'Mindfulness & Meditation', icon: '🧘', category: 'culture', description: 'Ancient practices for modern mental health' },
+            { id: 'linguistics', title: 'Language Origins', icon: '🗣️', category: 'culture', description: 'How human language evolved and spread' }
+        ];
+    }
+
+    createDidYouKnowFacts() {
+        return [
+            { fact: 'Octopuses have three hearts and blue blood!', topic: 'Marine Biology', icon: '🐙' },
+            { fact: 'A day on Venus is longer than a year on Venus!', topic: 'Astronomy', icon: '🪐' },
+            { fact: 'Honey never spoils - archaeologists found 3000-year-old honey that was still edible!', topic: 'Ancient Preservation', icon: '🍯' },
+            { fact: 'The human brain uses 20% of your body\'s energy despite being only 2% of your body weight!', topic: 'Neuroscience', icon: '🧠' },
+            { fact: 'Bananas are berries, but strawberries aren\'t!', topic: 'Botany', icon: '🍓' },
+            { fact: 'There are more stars in the universe than grains of sand on all Earth\'s beaches!', topic: 'Cosmology', icon: '⭐' },
+            { fact: 'The shortest war in history lasted 38-45 minutes!', topic: 'History', icon: '⚔️' },
+            { fact: 'Your body completely replaces all its cells every 7-10 years!', topic: 'Biology', icon: '🔬' }
+        ];
+    }
+
+    renderSuggestionCards(filter = 'all') {
+        const container = document.getElementById('suggestionCards');
+        if (!container) return;
+
+        let suggestions = this.topicSuggestions;
+
+        // Filter by category
+        if (filter !== 'all') {
+            suggestions = suggestions.filter(s => s.category === filter);
+        }
+
+        // Filter out skipped topics this session
+        suggestions = suggestions.filter(s => !this.skippedThisSession.includes(s.id));
+
+        // Shuffle and take first 6
+        const shuffled = [...suggestions].sort(() => Math.random() - 0.5);
+        const displayed = shuffled.slice(0, 6);
+
+        container.innerHTML = displayed.map(suggestion => {
+            const isBookmarked = this.userProgress.bookmarkedTopics.includes(suggestion.id);
+            return `
+                <div class="suggestion-card" data-topic-id="${suggestion.id}">
+                    <div class="suggestion-header">
+                        <span class="suggestion-icon">${suggestion.icon}</span>
+                        <button class="bookmark-icon ${isBookmarked ? 'bookmarked' : ''}"
+                                onclick="event.stopPropagation(); app.toggleBookmark('${suggestion.id}')"
+                                title="${isBookmarked ? 'Remove bookmark' : 'Bookmark for later'}">
+                            ${isBookmarked ? '⭐' : '☆'}
+                        </button>
+                    </div>
+                    <h4 class="suggestion-title">${suggestion.title}</h4>
+                    <p class="suggestion-description">${suggestion.description}</p>
+                    <div class="suggestion-actions">
+                        <button class="btn btn-primary btn-sm" onclick="app.loadSuggestionTopic('${suggestion.id}')">
+                            Learn This
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="app.skipSuggestion('${suggestion.id}')">
+                            Skip
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    filterSuggestions(category) {
+        // Update active button
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        // Re-render with filter
+        this.renderSuggestionCards(category);
+    }
+
+    renderBookmarks() {
+        const container = document.getElementById('bookmarksList');
+        if (!container) return;
+
+        if (this.userProgress.bookmarkedTopics.length === 0) {
+            container.innerHTML = '<li class="nav-item"><p style="padding: 1rem; color: var(--text-tertiary); font-size: 0.875rem; text-align: center;">Bookmark topics you find interesting!</p></li>';
+            return;
+        }
+
+        container.innerHTML = this.userProgress.bookmarkedTopics.map(topicId => {
+            const suggestion = this.topicSuggestions.find(s => s.id === topicId);
+            if (!suggestion) return '';
+
+            return `
+                <li class="nav-item">
+                    <a class="nav-link" onclick="app.loadSuggestionTopic('${suggestion.id}')">
+                        <span class="nav-link-icon">${suggestion.icon}</span>
+                        <div class="nav-link-content">
+                            <div class="nav-link-title">${suggestion.title}</div>
+                            <div class="nav-link-subtitle">Bookmarked</div>
+                        </div>
+                        <button class="icon-btn" onclick="event.stopPropagation(); app.toggleBookmark('${suggestion.id}')"
+                                title="Remove bookmark" style="padding: 0.25rem;">
+                            <span style="font-size: 0.875rem;">✕</span>
+                        </button>
+                    </a>
+                </li>
+            `;
+        }).join('');
+    }
+
+    toggleBookmark(topicId) {
+        const index = this.userProgress.bookmarkedTopics.indexOf(topicId);
+
+        if (index === -1) {
+            // Add bookmark
+            this.userProgress.bookmarkedTopics.push(topicId);
+            this.showToast('Bookmarked! 📌', 'success');
+        } else {
+            // Remove bookmark
+            this.userProgress.bookmarkedTopics.splice(index, 1);
+            this.showToast('Bookmark removed', 'info');
+        }
+
+        this.saveProgress();
+        this.renderSuggestionCards();
+        this.renderBookmarks();
+    }
+
+    skipSuggestion(topicId) {
+        // Add to skipped list for this session
+        this.skippedThisSession.push(topicId);
+
+        // Re-render to remove it
+        this.renderSuggestionCards();
+
+        this.showToast('Topic skipped', 'info');
+    }
+
+    renderDidYouKnow() {
+        const container = document.getElementById('didYouKnowSection');
+        if (!container) return;
+
+        // Pick a random fact
+        const fact = this.didYouKnowFacts[Math.floor(Math.random() * this.didYouKnowFacts.length)];
+
+        container.innerHTML = `
+            <div class="did-you-know-card">
+                <h3 class="did-you-know-title">💡 Did You Know?</h3>
+                <p class="did-you-know-fact">${fact.icon} ${fact.fact}</p>
+                <button class="btn btn-secondary btn-sm" onclick="app.searchTopic('${fact.topic}')">
+                    Learn about ${fact.topic}
+                </button>
+            </div>
+        `;
+    }
+
+    async loadSuggestionTopic(topicId) {
+        const suggestion = this.topicSuggestions.find(s => s.id === topicId);
+        if (!suggestion) return;
+
+        // Check API key
+        if (!this.CLAUDE_API_KEY) {
+            this.showToast('Please set your Claude API key first', 'error');
+            this.checkApiKey();
+            return;
+        }
+
+        // Show loading
+        this.showToast(`Creating lesson about ${suggestion.title}... ⏳`, 'info');
+
+        try {
+            // Generate lesson with AI
+            const lesson = await this.generateLessonWithAI(suggestion.title);
+
+            // Save to user topics
+            this.userProgress.userTopics.push(lesson);
+            this.saveProgress();
+
+            // Load the lesson
+            this.loadDynamicTopic(lesson.id);
+
+            this.showToast('Lesson created! Happy learning! 🎉', 'success');
+
+        } catch (error) {
+            console.error('Topic load error:', error);
+            this.showToast('Failed to create lesson. Please try again.', 'error');
+        }
+    }
+
+    async learnSomethingRandom() {
+        // Get all available suggestions (not skipped)
+        const available = this.topicSuggestions.filter(s => !this.skippedThisSession.includes(s.id));
+
+        if (available.length === 0) {
+            this.showToast('You\'ve explored all topics! Resetting...', 'info');
+            this.skippedThisSession = [];
+            return this.learnSomethingRandom();
+        }
+
+        // Pick random topic
+        const randomTopic = available[Math.floor(Math.random() * available.length)];
+
+        this.showToast(`🎲 Surprise topic: ${randomTopic.title}!`, 'info');
+
+        // Load it
+        await this.loadSuggestionTopic(randomTopic.id);
+    }
+
+    showDailyTopic() {
+        // Use date to pick "daily" topic (same each day, changes daily)
+        const today = new Date();
+        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
+        const topicIndex = dayOfYear % this.topicSuggestions.length;
+
+        const dailyTopic = this.topicSuggestions[topicIndex];
+
+        this.showToast(`⭐ Today's topic: ${dailyTopic.title}!`, 'success');
+
+        // Load it
+        this.loadSuggestionTopic(dailyTopic.id);
+    }
+
     // Navigation & UI
     renderNavigation() {
         const navList = document.getElementById('navList');
@@ -936,9 +1199,9 @@ Return ONLY valid JSON, no other text.`;
     }
 
     // Universal Topic Search
-    async searchTopic() {
+    async searchTopic(topicOverride = null) {
         const searchInput = document.getElementById('topicSearch');
-        const query = searchInput.value.trim();
+        const query = topicOverride || searchInput.value.trim();
 
         if (!query) {
             this.showToast('Please enter a topic to learn about', 'info');
@@ -953,7 +1216,7 @@ Return ONLY valid JSON, no other text.`;
         }
 
         // Show loading
-        searchInput.disabled = true;
+        if (searchInput) searchInput.disabled = true;
         this.showToast('Creating your personalized lesson... ⏳', 'info');
 
         try {
@@ -967,8 +1230,10 @@ Return ONLY valid JSON, no other text.`;
             // Load the lesson
             this.loadDynamicTopic(lesson.id);
 
-            // Clear search
-            searchInput.value = '';
+            // Clear search if using search input
+            if (searchInput && !topicOverride) {
+                searchInput.value = '';
+            }
 
             this.showToast('Lesson created! Happy learning! 🎉', 'success');
 
@@ -976,7 +1241,7 @@ Return ONLY valid JSON, no other text.`;
             console.error('Topic search error:', error);
             this.showToast('Failed to create lesson. Please try again.', 'error');
         } finally {
-            searchInput.disabled = false;
+            if (searchInput) searchInput.disabled = false;
         }
     }
 
