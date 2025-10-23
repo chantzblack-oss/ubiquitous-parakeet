@@ -5,7 +5,8 @@ class LearnHub {
     constructor() {
         // Configuration
         this.CLAUDE_API_KEY = localStorage.getItem('claudeApiKey') || '';
-        this.CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+        // Use proxy endpoint to avoid CORS issues
+        this.CLAUDE_API_URL = '/api/claude';
 
         // State
         this.currentModule = null;
@@ -1147,11 +1148,10 @@ Return ONLY valid JSON, no other text.`;
         const response = await fetch(this.CLAUDE_API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': this.CLAUDE_API_KEY,
-                'anthropic-version': '2023-06-01'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                apiKey: this.CLAUDE_API_KEY,
                 model: 'claude-3-5-sonnet-20241022',
                 max_tokens: 4000,
                 messages: [{
@@ -1290,11 +1290,10 @@ Return ONLY valid JSON, no other text.`;
         const response = await fetch(this.CLAUDE_API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': this.CLAUDE_API_KEY,
-                'anthropic-version': '2023-06-01'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                apiKey: this.CLAUDE_API_KEY,
                 model: 'claude-3-5-sonnet-20241022',
                 max_tokens: 4000,
                 messages: [{
@@ -1778,15 +1777,14 @@ Return ONLY valid JSON, no other text.`
         const typingId = this.showTypingIndicator();
 
         try {
-            // Call Claude API
+            // Call Claude API via proxy
             const response = await fetch(this.CLAUDE_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': this.CLAUDE_API_KEY,
-                    'anthropic-version': '2023-06-01'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    apiKey: this.CLAUDE_API_KEY,
                     model: 'claude-3-5-sonnet-20241022',
                     max_tokens: 1024,
                     messages: [{
@@ -2068,11 +2066,10 @@ Return ONLY valid JSON, no other text.`
             const response = await fetch(this.CLAUDE_API_URL, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': key,
-                    'anthropic-version': '2023-06-01'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    apiKey: key,
                     model: 'claude-3-5-sonnet-20241022',
                     max_tokens: 50,
                     messages: [{

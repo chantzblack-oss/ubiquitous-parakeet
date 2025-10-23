@@ -40,45 +40,64 @@ An engaging, mobile-first web app for interactive learning with AI tutoring, gam
 
 ## 🚀 Quick Start
 
-### 1. Get the Files
+### Option 1: Deploy to Vercel (Recommended)
 
-Just download these three files to a folder:
-- `index.html`
-- `styles.css`
-- `app.js`
+The easiest way to use LearnHub is to deploy it to Vercel with the built-in serverless API proxy:
 
-### 2. Get Your Claude API Key (for AI Tutor)
+1. **Fork or Clone** this repository
+2. **Sign up** at [https://vercel.com](https://vercel.com) (free)
+3. **Click "New Project"** and import your repository
+4. **Add Environment Variable:**
+   - Key: `ANTHROPIC_API_KEY`
+   - Value: Your Claude API key (get from [https://console.anthropic.com/](https://console.anthropic.com/))
+5. **Deploy** - Vercel will build and deploy automatically
+6. **Done!** Your app is live at `your-app.vercel.app`
 
-1. Go to [https://console.anthropic.com/](https://console.anthropic.com/)
-2. Sign up or log in
-3. Navigate to "API Keys" section
-4. Create a new API key
-5. Copy the key (you'll need it when you first use the AI tutor)
+**Why Vercel?**
+- ✅ Keeps your API key secure on the server (never exposed to browsers)
+- ✅ No CORS issues
+- ✅ Free SSL certificate
+- ✅ Automatic deployments from git
+- ✅ Serverless functions included
 
-**Note:** You can use the app without an API key, but the AI chat won't work.
+### Option 2: Deploy to Netlify
 
-### 3. Open the App
+1. **Sign up** at [https://netlify.com](https://netlify.com)
+2. **Drag and drop** your folder or connect your repository
+3. **Add Environment Variable:**
+   - Key: `ANTHROPIC_API_KEY`
+   - Value: Your Claude API key
+4. **Deploy**
 
-Simply open `index.html` in your web browser:
-- **Easy Way:** Double-click the file
-- **Better Way:** Use a local server (see below)
+### Option 3: Local Development
 
-### Optional: Using a Local Server
-
-For the best experience, run a local server:
+For testing locally:
 
 ```bash
-# If you have Python installed:
-python -m http.server 8000
+# Install Vercel CLI
+npm i -g vercel
 
-# If you have Node.js installed:
-npx http-server
+# Run locally with serverless functions
+vercel dev
 
-# If you have PHP installed:
-php -S localhost:8000
+# Or set environment variable first
+export ANTHROPIC_API_KEY=sk-ant-api03-...
+vercel dev
 ```
 
-Then open: `http://localhost:8000`
+Then open: `http://localhost:3000`
+
+**Alternative (without serverless functions):**
+You can still run locally and enter your API key in the app's Settings:
+
+```bash
+# Any local server works:
+python -m http.server 8000
+# Or
+npx http-server
+```
+
+Then open `http://localhost:8000` and configure your API key in Settings (⚙️ button)
 
 ## 🎮 How to Use
 
@@ -209,16 +228,27 @@ learnhub/
 ├── index.html       # Main HTML structure
 ├── styles.css       # All styling (mobile-first)
 ├── app.js          # Application logic
+├── api/
+│   └── claude.js   # Serverless function (API proxy)
+├── vercel.json     # Vercel configuration
 └── README.md       # This file
 ```
 
 ### API Integration
 
-The app uses Claude 3.5 Sonnet for AI tutoring:
-- **Endpoint:** `https://api.anthropic.com/v1/messages`
+The app uses Claude 3.5 Sonnet for AI tutoring via a secure proxy:
+- **Frontend:** Calls `/api/claude` (serverless function)
+- **Backend Proxy:** Forwards to `https://api.anthropic.com/v1/messages`
 - **Model:** `claude-3-5-sonnet-20241022`
-- **Max tokens:** 1024 per response
+- **Max tokens:** 1024-4000 per response
+- **Security:** API key stored as environment variable on server
 - **Context:** Includes current learning module info
+
+**How it works:**
+1. Frontend makes request to `/api/claude`
+2. Serverless function validates and proxies to Anthropic API
+3. Response sent back to frontend
+4. API key never exposed to browser
 
 ## 📖 Available Learning Modules
 
@@ -263,10 +293,23 @@ Unlock these achievements as you learn:
 ## 🐛 Troubleshooting
 
 ### AI Chat Not Working
-- Check your API key is valid
+
+**On Vercel/Netlify:**
+- Check `ANTHROPIC_API_KEY` environment variable is set
+- Verify environment variable was saved and redeployed
+- Check function logs in Vercel/Netlify dashboard
+- Ensure you have API credits at console.anthropic.com
+
+**Local Development:**
+- If using `vercel dev`, set environment variable
+- Or configure API key in app Settings (⚙️ button)
 - Ensure you have internet connection
-- Verify you have API credits remaining
 - Check browser console for errors
+
+**Common Errors:**
+- "API key required" → Set env variable or configure in Settings
+- "authentication_error" → Invalid API key, check the key is correct
+- "CORS error" → Deploy to Vercel or use proxy endpoint
 
 ### Text-to-Speech Not Working
 - Make sure your browser supports Web Speech API
