@@ -102,6 +102,9 @@ class LearnHub {
     }
 
     setupEventListeners() {
+        // Settings button
+        document.getElementById('settingsBtn')?.addEventListener('click', () => this.openSettings());
+
         // Dark mode toggle
         document.getElementById('darkModeToggle')?.addEventListener('click', () => this.toggleDarkMode());
 
@@ -881,7 +884,17 @@ class LearnHub {
 
         } catch (error) {
             console.error('Topic load error:', error);
-            this.showToast('Failed to create lesson. Please try again.', 'error');
+            const errorMsg = error.message || 'Failed to create lesson. Please try again.';
+            this.showToast(errorMsg, 'error');
+
+            // If it's an API key issue, suggest opening settings
+            if (errorMsg.includes('API key') || errorMsg.includes('authentication')) {
+                setTimeout(() => {
+                    if (confirm('Would you like to open settings to configure your API key?')) {
+                        this.openSettings();
+                    }
+                }, 500);
+            }
         }
     }
 
@@ -1149,7 +1162,25 @@ Return ONLY valid JSON, no other text.`;
         });
 
         if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+            const data = await response.json();
+            let errorMessage = `API Error (${response.status})`;
+
+            if (data.error) {
+                if (data.error.type === 'authentication_error') {
+                    errorMessage = 'Invalid API key. Please check your settings.';
+                } else if (data.error.type === 'permission_error') {
+                    errorMessage = 'API key lacks required permissions.';
+                } else if (data.error.type === 'rate_limit_error') {
+                    errorMessage = 'Rate limit exceeded. Please wait a moment.';
+                } else if (data.error.type === 'insufficient_quota') {
+                    errorMessage = 'API quota exceeded. Please check your billing.';
+                } else {
+                    errorMessage = data.error.message || errorMessage;
+                }
+            }
+
+            console.error('API Error:', data);
+            throw new Error(errorMessage);
         }
 
         const data = await response.json();
@@ -1239,7 +1270,17 @@ Return ONLY valid JSON, no other text.`;
 
         } catch (error) {
             console.error('Topic search error:', error);
-            this.showToast('Failed to create lesson. Please try again.', 'error');
+            const errorMsg = error.message || 'Failed to create lesson. Please try again.';
+            this.showToast(errorMsg, 'error');
+
+            // If it's an API key issue, suggest opening settings
+            if (errorMsg.includes('API key') || errorMsg.includes('authentication')) {
+                setTimeout(() => {
+                    if (confirm('Would you like to open settings to configure your API key?')) {
+                        this.openSettings();
+                    }
+                }, 500);
+            }
         } finally {
             if (searchInput) searchInput.disabled = false;
         }
@@ -1301,7 +1342,25 @@ Return ONLY valid JSON, no other text.`
         });
 
         if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+            const data = await response.json();
+            let errorMessage = `API Error (${response.status})`;
+
+            if (data.error) {
+                if (data.error.type === 'authentication_error') {
+                    errorMessage = 'Invalid API key. Please check your settings.';
+                } else if (data.error.type === 'permission_error') {
+                    errorMessage = 'API key lacks required permissions.';
+                } else if (data.error.type === 'rate_limit_error') {
+                    errorMessage = 'Rate limit exceeded. Please wait a moment.';
+                } else if (data.error.type === 'insufficient_quota') {
+                    errorMessage = 'API quota exceeded. Please check your billing.';
+                } else {
+                    errorMessage = data.error.message || errorMessage;
+                }
+            }
+
+            console.error('API Error:', data);
+            throw new Error(errorMessage);
         }
 
         const data = await response.json();
@@ -1669,14 +1728,12 @@ Return ONLY valid JSON, no other text.`
     // AI Chat
     checkApiKey() {
         if (!this.CLAUDE_API_KEY) {
-            // Prompt for API key
+            // Show settings modal to configure API key
             setTimeout(() => {
-                const key = prompt('Enter your Claude API key to enable AI tutoring:\n\n(Get one at: https://console.anthropic.com/)');
-                if (key) {
-                    this.CLAUDE_API_KEY = key;
-                    localStorage.setItem('claudeApiKey', key);
-                    this.showToast('API key saved! AI tutor is ready.', 'success');
-                }
+                this.showToast('Please configure your Claude API key in Settings', 'info');
+                setTimeout(() => {
+                    this.openSettings();
+                }, 1000);
             }, 2000);
         }
     }
@@ -1740,7 +1797,25 @@ Return ONLY valid JSON, no other text.`
             });
 
             if (!response.ok) {
-                throw new Error(`API error: ${response.status}`);
+                const data = await response.json();
+                let errorMessage = `API Error (${response.status})`;
+
+                if (data.error) {
+                    if (data.error.type === 'authentication_error') {
+                        errorMessage = 'Invalid API key';
+                    } else if (data.error.type === 'permission_error') {
+                        errorMessage = 'API key lacks required permissions';
+                    } else if (data.error.type === 'rate_limit_error') {
+                        errorMessage = 'Rate limit exceeded. Please wait a moment.';
+                    } else if (data.error.type === 'insufficient_quota') {
+                        errorMessage = 'API quota exceeded. Please check your billing.';
+                    } else {
+                        errorMessage = data.error.message || errorMessage;
+                    }
+                }
+
+                console.error('API Error:', data);
+                throw new Error(errorMessage);
             }
 
             const data = await response.json();
@@ -1755,7 +1830,9 @@ Return ONLY valid JSON, no other text.`
         } catch (error) {
             console.error('Chat error:', error);
             this.removeTypingIndicator(typingId);
-            this.addChatMessage('Oops! I had trouble connecting. Make sure your API key is valid and you have internet connection.', 'bot');
+
+            const errorMsg = error.message || 'Network error';
+            this.addChatMessage(`❌ Error: ${errorMsg}\n\nPlease check your API key in Settings (⚙️ button).`, 'bot');
             this.showToast('Failed to get AI response', 'error');
         }
     }
@@ -1909,6 +1986,158 @@ Return ONLY valid JSON, no other text.`
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    // Settings Modal
+    openSettings() {
+        const modal = document.getElementById('settingsModal');
+        const input = document.getElementById('apiKeyInput');
+
+        // Load current API key
+        if (this.CLAUDE_API_KEY) {
+            input.value = this.CLAUDE_API_KEY;
+        }
+
+        modal.classList.remove('hidden');
+        this.updateApiKeyStatus();
+    }
+
+    closeSettings() {
+        document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    toggleApiKeyVisibility() {
+        const input = document.getElementById('apiKeyInput');
+        const btn = document.getElementById('toggleApiKeyBtn');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+        } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+        }
+    }
+
+    saveApiKey() {
+        const input = document.getElementById('apiKeyInput');
+        const key = input.value.trim();
+
+        if (!key) {
+            this.showToast('Please enter an API key', 'error');
+            return;
+        }
+
+        // Basic validation
+        if (!key.startsWith('sk-ant-')) {
+            this.showToast('API key should start with "sk-ant-"', 'warning');
+        }
+
+        this.CLAUDE_API_KEY = key;
+        localStorage.setItem('claudeApiKey', key);
+        this.updateApiKeyStatus();
+        this.showToast('API key saved! 🎉', 'success');
+    }
+
+    clearApiKey() {
+        if (!confirm('Are you sure you want to clear your API key?')) {
+            return;
+        }
+
+        this.CLAUDE_API_KEY = '';
+        localStorage.removeItem('claudeApiKey');
+        document.getElementById('apiKeyInput').value = '';
+        this.updateApiKeyStatus();
+        this.showToast('API key cleared', 'info');
+    }
+
+    async testApiKey() {
+        const key = this.CLAUDE_API_KEY || document.getElementById('apiKeyInput').value.trim();
+
+        if (!key) {
+            this.showToast('Please enter an API key first', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('testApiBtn');
+        const originalText = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '⏳ Testing...';
+
+        try {
+            const response = await fetch(this.CLAUDE_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': key,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 50,
+                    messages: [{
+                        role: 'user',
+                        content: 'Say "API connection successful!" and nothing else.'
+                    }]
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                let errorMessage = `API Error (${response.status})`;
+
+                if (data.error) {
+                    if (data.error.type === 'authentication_error') {
+                        errorMessage = '❌ Invalid API key';
+                    } else if (data.error.type === 'permission_error') {
+                        errorMessage = '❌ Permission denied';
+                    } else if (data.error.type === 'rate_limit_error') {
+                        errorMessage = '❌ Rate limit exceeded';
+                    } else {
+                        errorMessage = `❌ ${data.error.message || errorMessage}`;
+                    }
+                }
+
+                this.updateApiKeyStatus('error', errorMessage);
+                this.showToast(errorMessage, 'error');
+                return;
+            }
+
+            // Success
+            this.updateApiKeyStatus('success', '✓ API connection successful!');
+            this.showToast('✓ API connection successful!', 'success');
+
+        } catch (error) {
+            console.error('API test error:', error);
+            const errorMsg = '❌ Network error - check your connection';
+            this.updateApiKeyStatus('error', errorMsg);
+            this.showToast(errorMsg, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+        }
+    }
+
+    updateApiKeyStatus(status = null, message = null) {
+        const statusDiv = document.getElementById('apiKeyStatus');
+
+        if (!statusDiv) return;
+
+        // Remove all status classes
+        statusDiv.classList.remove('success', 'error', 'warning');
+
+        if (status) {
+            statusDiv.classList.add(status);
+            statusDiv.querySelector('.status-text').textContent = message;
+        } else if (this.CLAUDE_API_KEY) {
+            statusDiv.classList.add('warning');
+            const maskedKey = this.CLAUDE_API_KEY.substring(0, 12) + '...' +
+                             this.CLAUDE_API_KEY.substring(this.CLAUDE_API_KEY.length - 4);
+            statusDiv.querySelector('.status-text').textContent = `API key configured: ${maskedKey}`;
+        } else {
+            statusDiv.querySelector('.status-text').textContent = 'No API key configured';
+        }
     }
 }
 
