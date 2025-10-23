@@ -5,7 +5,10 @@ class LearnHub {
     constructor() {
         // Configuration
         this.CLAUDE_API_KEY = localStorage.getItem('claudeApiKey') || '';
-        this.CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+        // Try to use proxy endpoint if available (Vercel), otherwise direct API
+        this.USE_PROXY = true;
+        this.PROXY_URL = '/api/claude';
+        this.DIRECT_API_URL = 'https://api.anthropic.com/v1/messages';
 
         // State
         this.currentModule = null;
@@ -1144,46 +1147,10 @@ Make it:
 
 Return ONLY valid JSON, no other text.`;
 
-        const response = await fetch(this.CLAUDE_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': this.CLAUDE_API_KEY,
-                'anthropic-version': '2023-06-01'
-            },
-            body: JSON.stringify({
-                model: 'claude-3-5-sonnet-20241022',
-                max_tokens: 4000,
-                messages: [{
-                    role: 'user',
-                    content: prompt
-                }]
-            })
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            let errorMessage = `API Error (${response.status})`;
-
-            if (data.error) {
-                if (data.error.type === 'authentication_error') {
-                    errorMessage = 'Invalid API key. Please check your settings.';
-                } else if (data.error.type === 'permission_error') {
-                    errorMessage = 'API key lacks required permissions.';
-                } else if (data.error.type === 'rate_limit_error') {
-                    errorMessage = 'Rate limit exceeded. Please wait a moment.';
-                } else if (data.error.type === 'insufficient_quota') {
-                    errorMessage = 'API quota exceeded. Please check your billing.';
-                } else {
-                    errorMessage = data.error.message || errorMessage;
-                }
-            }
-
-            console.error('API Error:', data);
-            throw new Error(errorMessage);
-        }
-
-        const data = await response.json();
+        const data = await this.callClaudeAPI([{
+            role: 'user',
+            content: prompt
+        }], 4000);
         const aiResponse = data.content[0].text;
 
         // Parse JSON from AI response
@@ -1227,6 +1194,95 @@ Return ONLY valid JSON, no other text.`;
                 }
             }))
         };
+    }
+
+    // API Helper - Tries proxy first, falls back to direct API
+    async callClaudeAPI(messages, maxTokens = 4000, apiKey = null) {
+        const key = apiKey || this.CLAUDE_API_KEY;
+        const requestBody = {
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: maxTokens,
+            messages
+        };
+
+        // Try proxy first if enabled
+        if (this.USE_PROXY) {
+            try {
+                const response = await fetch(this.PROXY_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        apiKey: key,
+                        ...requestBody
+                    })
+                });
+
+                if (response.ok) {
+                    return await response.json();
+                }
+
+                // If proxy returns error, try to parse it
+                const errorData = await response.json();
+
+                // If it's a 404, proxy doesn't exist - fall back to direct
+                if (response.status === 404) {
+                    console.log('Proxy not available, falling back to direct API calls');
+                    this.USE_PROXY = false;
+                    return this.callClaudeAPI(messages, maxTokens);
+                }
+
+                // Otherwise, it's a real API error
+                throw this.parseAPIError(errorData, response.status);
+
+            } catch (error) {
+                // Network error or proxy unavailable - try direct API
+                if (error.message.includes('fetch') || error.message.includes('Failed to fetch')) {
+                    console.log('Proxy unreachable, falling back to direct API calls');
+                    this.USE_PROXY = false;
+                    return this.callClaudeAPI(messages, maxTokens);
+                }
+                throw error;
+            }
+        }
+
+        // Direct API call (fallback or when proxy disabled)
+        const response = await fetch(this.DIRECT_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw this.parseAPIError(errorData, response.status);
+        }
+
+        return await response.json();
+    }
+
+    parseAPIError(data, status) {
+        let errorMessage = `API Error (${status})`;
+
+        if (data.error) {
+            if (data.error.type === 'authentication_error') {
+                errorMessage = 'Invalid API key. Please check your settings.';
+            } else if (data.error.type === 'permission_error') {
+                errorMessage = 'API key lacks required permissions.';
+            } else if (data.error.type === 'rate_limit_error') {
+                errorMessage = 'Rate limit exceeded. Please wait a moment.';
+            } else if (data.error.type === 'insufficient_quota') {
+                errorMessage = 'API quota exceeded. Please check your billing.';
+            } else {
+                errorMessage = data.error.message || errorMessage;
+            }
+        }
+
+        console.error('API Error:', data);
+        return new Error(errorMessage);
     }
 
     // Universal Topic Search
@@ -1287,19 +1343,9 @@ Return ONLY valid JSON, no other text.`;
     }
 
     async generateLessonWithAI(topic) {
-        const response = await fetch(this.CLAUDE_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': this.CLAUDE_API_KEY,
-                'anthropic-version': '2023-06-01'
-            },
-            body: JSON.stringify({
-                model: 'claude-3-5-sonnet-20241022',
-                max_tokens: 4000,
-                messages: [{
-                    role: 'user',
-                    content: `Create an interactive learning lesson about "${topic}".
+        const data = await this.callClaudeAPI([{
+            role: 'user',
+            content: `Create an interactive learning lesson about "${topic}".
 
 You are a friendly, enthusiastic tutor. Structure the lesson as JSON with this EXACT format:
 
@@ -1337,33 +1383,8 @@ Make it:
 - Be engaging and fun!
 
 Return ONLY valid JSON, no other text.`
-                }]
-            })
-        });
+        }], 4000);
 
-        if (!response.ok) {
-            const data = await response.json();
-            let errorMessage = `API Error (${response.status})`;
-
-            if (data.error) {
-                if (data.error.type === 'authentication_error') {
-                    errorMessage = 'Invalid API key. Please check your settings.';
-                } else if (data.error.type === 'permission_error') {
-                    errorMessage = 'API key lacks required permissions.';
-                } else if (data.error.type === 'rate_limit_error') {
-                    errorMessage = 'Rate limit exceeded. Please wait a moment.';
-                } else if (data.error.type === 'insufficient_quota') {
-                    errorMessage = 'API quota exceeded. Please check your billing.';
-                } else {
-                    errorMessage = data.error.message || errorMessage;
-                }
-            }
-
-            console.error('API Error:', data);
-            throw new Error(errorMessage);
-        }
-
-        const data = await response.json();
         const aiResponse = data.content[0].text;
 
         // Parse JSON from AI response
@@ -1779,46 +1800,11 @@ Return ONLY valid JSON, no other text.`
 
         try {
             // Call Claude API
-            const response = await fetch(this.CLAUDE_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': this.CLAUDE_API_KEY,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: 'claude-3-5-sonnet-20241022',
-                    max_tokens: 1024,
-                    messages: [{
-                        role: 'user',
-                        content: `You are a friendly, enthusiastic tutor helping someone learn programming. Be conversational and informal (like explaining to a friend). Keep responses concise but helpful. Use examples when possible.\n\nStudent question: ${message}\n\n${this.currentModule ? `Context: They're currently learning about "${this.currentModule.sections[this.currentSection].title}" in the "${this.currentModule.title}" module.` : ''}`
-                    }]
-                })
-            });
+            const data = await this.callClaudeAPI([{
+                role: 'user',
+                content: `You are a friendly, enthusiastic tutor helping someone learn programming. Be conversational and informal (like explaining to a friend). Keep responses concise but helpful. Use examples when possible.\n\nStudent question: ${message}\n\n${this.currentModule ? `Context: They're currently learning about "${this.currentModule.sections[this.currentSection].title}" in the "${this.currentModule.title}" module.` : ''}`
+            }], 1024);
 
-            if (!response.ok) {
-                const data = await response.json();
-                let errorMessage = `API Error (${response.status})`;
-
-                if (data.error) {
-                    if (data.error.type === 'authentication_error') {
-                        errorMessage = 'Invalid API key';
-                    } else if (data.error.type === 'permission_error') {
-                        errorMessage = 'API key lacks required permissions';
-                    } else if (data.error.type === 'rate_limit_error') {
-                        errorMessage = 'Rate limit exceeded. Please wait a moment.';
-                    } else if (data.error.type === 'insufficient_quota') {
-                        errorMessage = 'API quota exceeded. Please check your billing.';
-                    } else {
-                        errorMessage = data.error.message || errorMessage;
-                    }
-                }
-
-                console.error('API Error:', data);
-                throw new Error(errorMessage);
-            }
-
-            const data = await response.json();
             const reply = data.content[0].text;
 
             // Remove typing indicator
@@ -2065,44 +2051,10 @@ Return ONLY valid JSON, no other text.`
         btn.textContent = '⏳ Testing...';
 
         try {
-            const response = await fetch(this.CLAUDE_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': key,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: 'claude-3-5-sonnet-20241022',
-                    max_tokens: 50,
-                    messages: [{
-                        role: 'user',
-                        content: 'Say "API connection successful!" and nothing else.'
-                    }]
-                })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                let errorMessage = `API Error (${response.status})`;
-
-                if (data.error) {
-                    if (data.error.type === 'authentication_error') {
-                        errorMessage = '❌ Invalid API key';
-                    } else if (data.error.type === 'permission_error') {
-                        errorMessage = '❌ Permission denied';
-                    } else if (data.error.type === 'rate_limit_error') {
-                        errorMessage = '❌ Rate limit exceeded';
-                    } else {
-                        errorMessage = `❌ ${data.error.message || errorMessage}`;
-                    }
-                }
-
-                this.updateApiKeyStatus('error', errorMessage);
-                this.showToast(errorMessage, 'error');
-                return;
-            }
+            await this.callClaudeAPI([{
+                role: 'user',
+                content: 'Say "API connection successful!" and nothing else.'
+            }], 50, key);
 
             // Success
             this.updateApiKeyStatus('success', '✓ API connection successful!');
@@ -2110,9 +2062,9 @@ Return ONLY valid JSON, no other text.`
 
         } catch (error) {
             console.error('API test error:', error);
-            const errorMsg = '❌ Network error - check your connection';
-            this.updateApiKeyStatus('error', errorMsg);
-            this.showToast(errorMsg, 'error');
+            const errorMsg = error.message || 'Network error - check your connection';
+            this.updateApiKeyStatus('error', '❌ ' + errorMsg);
+            this.showToast('❌ ' + errorMsg, 'error');
         } finally {
             btn.disabled = false;
             btn.textContent = originalText;
