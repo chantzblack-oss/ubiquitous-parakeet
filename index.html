@@ -14,6 +14,9 @@
         <div class="container header-content">
             <h1 class="logo">🚀 LearnHub</h1>
             <div class="header-controls">
+                <button class="icon-btn" id="settingsBtn" aria-label="Settings">
+                    <span class="icon">⚙️</span>
+                </button>
                 <button class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode">
                     <span class="icon">🌙</span>
                 </button>
@@ -268,6 +271,64 @@
                 <h3 class="achievement-name" id="achievementName"></h3>
                 <p class="achievement-description" id="achievementDescription"></p>
                 <button class="btn btn-primary" onclick="app.closeAchievementModal()">Awesome!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay hidden" id="settingsModal">
+        <div class="modal settings-modal">
+            <div class="modal-header">
+                <h2>⚙️ Settings</h2>
+                <button class="modal-close" onclick="app.closeSettings()" aria-label="Close settings">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>🤖 Claude API Configuration</h3>
+                    <p class="settings-description">
+                        Enter your Claude API key to enable AI-powered lesson generation and tutoring.
+                        <a href="https://console.anthropic.com/" target="_blank" rel="noopener">Get your API key here →</a>
+                    </p>
+
+                    <div class="form-group">
+                        <label for="apiKeyInput">API Key</label>
+                        <div class="input-group">
+                            <input type="password"
+                                   id="apiKeyInput"
+                                   class="form-control"
+                                   placeholder="sk-ant-api03-..."
+                                   autocomplete="off">
+                            <button class="btn btn-secondary" id="toggleApiKeyBtn" onclick="app.toggleApiKeyVisibility()">
+                                👁️
+                            </button>
+                        </div>
+                        <div class="api-key-status" id="apiKeyStatus">
+                            <span class="status-indicator"></span>
+                            <span class="status-text">No API key configured</span>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn btn-primary" onclick="app.saveApiKey()">
+                            💾 Save API Key
+                        </button>
+                        <button class="btn btn-secondary" onclick="app.testApiKey()" id="testApiBtn">
+                            🔍 Test Connection
+                        </button>
+                        <button class="btn btn-danger" onclick="app.clearApiKey()">
+                            🗑️ Clear Key
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>ℹ️ About</h3>
+                    <p class="settings-description">
+                        <strong>LearnHub</strong> - Your AI-powered learning companion<br>
+                        Version 1.0.0<br>
+                        Made with Claude Code
+                    </p>
+                </div>
             </div>
         </div>
     </div>
