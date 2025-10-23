@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Interactive learning platform with gamification">
+    <meta name="description" content="Interactive learning platform with AI tutor">
     <meta name="theme-color" content="#6366f1">
     <title>LearnHub - Interactive Learning Platform</title>
     <link rel="stylesheet" href="styles.css">
@@ -16,6 +16,10 @@
             <div class="header-controls">
                 <button class="icon-btn" id="darkModeToggle" aria-label="Toggle dark mode">
                     <span class="icon">🌙</span>
+                </button>
+                <button class="icon-btn" id="chatToggle" aria-label="Toggle AI chat">
+                    <span class="icon">💬</span>
+                    <span class="badge">AI</span>
                 </button>
             </div>
         </div>
@@ -70,9 +74,16 @@
                 </div>
 
                 <div class="nav-section">
-                    <h3 class="nav-title">Learning Paths</h3>
+                    <h3 class="nav-title">My Topics</h3>
+                    <ul class="nav-list" id="myTopicsList">
+                        <!-- User's learning topics will be inserted here -->
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="nav-title">Featured Paths</h3>
                     <ul class="nav-list" id="navList">
-                        <!-- Navigation items will be inserted here -->
+                        <!-- Pre-built navigation items will be inserted here -->
                     </ul>
                 </div>
             </nav>
@@ -85,17 +96,59 @@
                 <section class="welcome-screen" id="welcomeScreen">
                     <div class="welcome-hero">
                         <h1 class="welcome-title animate-fade-in">Welcome to LearnHub! 🎉</h1>
-                        <p class="welcome-subtitle animate-fade-in delay-1">Your personal interactive learning companion</p>
+                        <p class="welcome-subtitle animate-fade-in delay-1">Your personal AI-powered learning companion</p>
                         <p class="welcome-text animate-fade-in delay-2">
-                            Learn at your own pace with interactive modules, hands-on challenges,
-                            and track your progress as you level up. No boring textbooks here!
+                            Learn ANYTHING you want - history, science, languages, cooking, coding, and more!
+                            Just search for a topic and your AI tutor will create a personalized learning experience.
                         </p>
-                        <button class="btn btn-primary btn-large animate-fade-in delay-3" onclick="app.startLearning()">
-                            Start Learning 🚀
-                        </button>
+
+                        <!-- Universal Search Box -->
+                        <div class="search-container animate-fade-in delay-3">
+                            <div class="search-box">
+                                <input
+                                    type="text"
+                                    id="topicSearch"
+                                    class="search-input"
+                                    placeholder="What do you want to learn today? (e.g., 'Ancient Rome', 'Quantum Physics', 'French Cooking')"
+                                    onkeydown="if(event.key==='Enter') app.searchTopic()"
+                                />
+                                <button class="btn btn-primary search-btn" onclick="app.searchTopic()">
+                                    <span>Learn This</span>
+                                    <span class="icon">🚀</span>
+                                </button>
+                            </div>
+
+                            <div class="divider-text">OR</div>
+
+                            <!-- File Upload Section -->
+                            <div class="upload-section">
+                                <div class="upload-dropzone" id="uploadDropzone">
+                                    <input
+                                        type="file"
+                                        id="fileInput"
+                                        class="file-input"
+                                        accept=".pdf,.txt,.doc,.docx,.jpg,.jpeg,.png"
+                                        onchange="app.handleFileUpload(event)"
+                                    />
+                                    <div class="upload-content">
+                                        <div class="upload-icon">📄</div>
+                                        <p class="upload-title">Upload Your Study Materials</p>
+                                        <p class="upload-text">Drop files here or click to browse</p>
+                                        <p class="upload-formats">PDF, TXT, DOC, DOCX, Images (JPG, PNG)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="search-hint">Or explore our featured learning paths below</p>
+                        </div>
                     </div>
 
                     <div class="features-grid animate-fade-in delay-4">
+                        <div class="feature-card">
+                            <div class="feature-icon">🤖</div>
+                            <h3>AI Tutor</h3>
+                            <p>Ask questions anytime and get instant, personalized explanations</p>
+                        </div>
                         <div class="feature-card">
                             <div class="feature-icon">🎮</div>
                             <h3>Gamified</h3>
@@ -111,11 +164,6 @@
                             <h3>Interactive</h3>
                             <p>Hands-on challenges and real-world scenarios</p>
                         </div>
-                        <div class="feature-card">
-                            <div class="feature-icon">🔊</div>
-                            <h3>Text-to-Speech</h3>
-                            <p>Listen to lessons while multitasking</p>
-                        </div>
                     </div>
                 </section>
 
@@ -126,6 +174,40 @@
             </div>
         </main>
 
+        <!-- AI Chat Sidebar -->
+        <aside class="chat-sidebar" id="chatSidebar">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <span class="chat-icon">🤖</span>
+                    <span>AI Tutor</span>
+                </div>
+                <button class="icon-btn" id="closeChatBtn" aria-label="Close chat">
+                    <span class="icon">✕</span>
+                </button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p>Hey there! I'm your AI tutor. Ask me anything about what you're learning, and I'll explain it in a way that makes sense to you!</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-container">
+                <textarea
+                    class="chat-input"
+                    id="chatInput"
+                    placeholder="Ask me anything..."
+                    rows="1"
+                ></textarea>
+                <button class="btn btn-primary" id="sendChatBtn">
+                    <span>Send</span>
+                    <span class="icon">📤</span>
+                </button>
+            </div>
+        </aside>
     </div>
 
     <!-- Mobile Menu Toggle -->

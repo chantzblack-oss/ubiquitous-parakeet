@@ -3,10 +3,15 @@
 
 class LearnHub {
     constructor() {
+        // Configuration
+        this.CLAUDE_API_KEY = localStorage.getItem('claudeApiKey') || '';
+        this.CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+
         // State
         this.currentModule = null;
         this.currentSection = 0;
         this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+        this.isChatOpen = false;
         this.isSidebarOpen = false;
         this.speechSynthesis = window.speechSynthesis;
         this.currentUtterance = null;
@@ -42,16 +47,76 @@ class LearnHub {
         this.renderNavigation();
         this.renderBadges();
 
+        // Check for API key
+        this.checkApiKey();
+
         // Update streak
         this.updateStreak();
+
+        // Set up file upload drag and drop
+        this.setupFileUpload();
+    }
+
+    setupFileUpload() {
+        const dropzone = document.getElementById('uploadDropzone');
+        if (!dropzone) return;
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        // Highlight dropzone when dragging over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => {
+                dropzone.classList.add('drag-over');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => {
+                dropzone.classList.remove('drag-over');
+            }, false);
+        });
+
+        // Handle dropped files
+        dropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.processUploadedFile(files[0]);
+            }
+        }, false);
     }
 
     setupEventListeners() {
         // Dark mode toggle
         document.getElementById('darkModeToggle')?.addEventListener('click', () => this.toggleDarkMode());
 
+        // Chat toggle
+        document.getElementById('chatToggle')?.addEventListener('click', () => this.toggleChat());
+        document.getElementById('closeChatBtn')?.addEventListener('click', () => this.toggleChat());
+
         // Mobile menu toggle
         document.getElementById('mobileMenuToggle')?.addEventListener('click', () => this.toggleSidebar());
+
+        // Chat functionality
+        document.getElementById('sendChatBtn')?.addEventListener('click', () => this.sendChatMessage());
+        const chatInput = document.getElementById('chatInput');
+        chatInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendChatMessage();
+            }
+        });
+
+        // Auto-resize chat input
+        chatInput?.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
     }
 
     // Progress Management
@@ -64,7 +129,8 @@ class LearnHub {
             completedModules: [],
             completedSections: {},
             unlockedAchievements: [],
-            quizScores: {}
+            quizScores: {},
+            userTopics: []  // Store user-searched topics
         };
 
         const saved = localStorage.getItem('userProgress');
@@ -192,6 +258,13 @@ class LearnHub {
                 description: 'Get a perfect score on any quiz',
                 icon: '🎓',
                 condition: () => Object.values(this.userProgress.quizScores).some(score => score === 100)
+            },
+            {
+                id: 'chat_curious',
+                name: 'Curious Mind',
+                description: 'Ask your AI tutor a question',
+                icon: '🤔',
+                condition: () => this.userProgress.chatMessages > 0
             }
         ];
     }
@@ -606,6 +679,437 @@ class LearnHub {
                 </li>
             `;
         }).join('');
+
+        // Also render user topics
+        this.renderUserTopics();
+    }
+
+    renderUserTopics() {
+        const topicsList = document.getElementById('myTopicsList');
+        if (!topicsList) return;
+
+        if (this.userProgress.userTopics.length === 0) {
+            topicsList.innerHTML = '<li class="nav-item"><p style="padding: 1rem; color: var(--text-tertiary); font-size: 0.875rem; text-align: center;">Search for topics above to start learning!</p></li>';
+            return;
+        }
+
+        topicsList.innerHTML = this.userProgress.userTopics.map(topic => {
+            return `
+                <li class="nav-item">
+                    <a class="nav-link ${this.currentModule?.id === topic.id ? 'active' : ''}"
+                       onclick="app.loadDynamicTopic('${topic.id}')">
+                        <span class="nav-link-icon">${topic.icon || '📖'}</span>
+                        <div class="nav-link-content">
+                            <div class="nav-link-title">${topic.title}</div>
+                            <div class="nav-link-subtitle">Custom Topic</div>
+                        </div>
+                    </a>
+                </li>
+            `;
+        }).join('');
+    }
+
+    // File Upload Handling
+    handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.processUploadedFile(file);
+        }
+    }
+
+    async processUploadedFile(file) {
+        // Check API key
+        if (!this.CLAUDE_API_KEY) {
+            this.showToast('Please set your Claude API key first', 'error');
+            this.checkApiKey();
+            return;
+        }
+
+        // Validate file type
+        const validTypes = [
+            'text/plain',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/jpeg',
+            'image/jpg',
+            'image/png'
+        ];
+
+        if (!validTypes.includes(file.type) && !file.name.match(/\.(txt|pdf|doc|docx|jpg|jpeg|png)$/i)) {
+            this.showToast('Unsupported file type. Please upload PDF, TXT, DOC, DOCX, or images.', 'error');
+            return;
+        }
+
+        // Show loading
+        this.showToast(`Processing ${file.name}... ⏳`, 'info');
+
+        try {
+            // Extract text from file
+            const content = await this.extractTextFromFile(file);
+
+            if (!content || content.trim().length < 50) {
+                this.showToast('Could not extract enough content from file. Try a text-based file.', 'error');
+                return;
+            }
+
+            // Generate lesson from content
+            const lesson = await this.generateLessonFromContent(content, file.name);
+
+            // Save to user topics
+            this.userProgress.userTopics.push(lesson);
+            this.saveProgress();
+
+            // Load the lesson
+            this.loadDynamicTopic(lesson.id);
+
+            this.showToast(`Lesson created from ${file.name}! 🎉`, 'success');
+
+        } catch (error) {
+            console.error('File processing error:', error);
+            this.showToast('Failed to process file. Please try again.', 'error');
+        }
+    }
+
+    async extractTextFromFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                const content = e.target.result;
+
+                // Handle different file types
+                if (file.type === 'text/plain') {
+                    // Plain text file
+                    resolve(content);
+                } else if (file.type === 'application/pdf') {
+                    // For PDF, we'll use a simple approach
+                    // In production, you'd use PDF.js library
+                    // For now, we'll ask AI to handle it differently
+                    resolve('PDF_FILE:' + file.name);
+                } else if (file.type.startsWith('image/')) {
+                    // For images, we'll use Claude's vision capabilities
+                    resolve('IMAGE_FILE:' + file.name + ':' + content);
+                } else {
+                    // Try to read as text for DOC/DOCX
+                    resolve(content);
+                }
+            };
+
+            reader.onerror = () => reject(new Error('Failed to read file'));
+
+            // Read file based on type
+            if (file.type.startsWith('image/')) {
+                reader.readAsDataURL(file);
+            } else {
+                reader.readAsText(file);
+            }
+        });
+    }
+
+    async generateLessonFromContent(content, fileName) {
+        const isPDF = content.startsWith('PDF_FILE:');
+        const isImage = content.startsWith('IMAGE_FILE:');
+
+        let prompt;
+
+        if (isPDF) {
+            // For PDFs, ask user to describe or paste content
+            const userDescription = prompt(`I detected a PDF file. Please paste some key text from the PDF or describe what you want to learn from it:`);
+            if (!userDescription) {
+                throw new Error('PDF processing cancelled');
+            }
+            content = userDescription;
+        }
+
+        prompt = `I have this learning content from a file called "${fileName}":
+
+${isImage ? '[Note: This is from an image file, so extract visible text and concepts]' : ''}
+
+Content:
+${content.substring(0, 8000)}
+
+${content.length > 8000 ? '[Content truncated...]' : ''}
+
+Create an interactive learning lesson based on this content. Structure it as JSON with this EXACT format:
+
+{
+  "title": "Topic Title based on content",
+  "icon": "relevant emoji",
+  "subtitle": "short engaging description",
+  "description": "what learner will know after",
+  "sections": [
+    {
+      "title": "Section Name",
+      "icon": "emoji",
+      "whyCare": "Why this matters in real life (2-3 sentences)",
+      "keyPoints": [
+        "Point 1 from the content explained conversationally",
+        "Point 2 from the content with real-world relevance",
+        "Point 3 from the content with practical examples"
+      ],
+      "realWorldExample": "Concrete example they can relate to based on the content",
+      "practiceQuestion": {
+        "question": "Scenario-based question about the content",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctIndex": 0,
+        "explanation": "Why this answer is correct"
+      }
+    }
+  ]
+}
+
+Make it:
+- Conversational like explaining to a friend
+- Include 2-3 sections based on the content
+- Extract the most important concepts from the material
+- Make practice questions test understanding of the content
+- Be engaging and fun!
+
+Return ONLY valid JSON, no other text.`;
+
+        const response = await fetch(this.CLAUDE_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': this.CLAUDE_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 4000,
+                messages: [{
+                    role: 'user',
+                    content: prompt
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const aiResponse = data.content[0].text;
+
+        // Parse JSON from AI response
+        let lessonData;
+        try {
+            const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+            lessonData = JSON.parse(jsonMatch ? jsonMatch[0] : aiResponse);
+        } catch (e) {
+            throw new Error('Invalid lesson format from AI');
+        }
+
+        // Create module structure
+        const moduleId = `file_${Date.now()}`;
+        return {
+            id: moduleId,
+            title: lessonData.title,
+            icon: lessonData.icon || '📄',
+            subtitle: lessonData.subtitle,
+            description: lessonData.description,
+            duration: 'From File',
+            difficulty: 'Custom Content',
+            isDynamic: true,
+            sourceFile: fileName,
+            sections: lessonData.sections.map((section, idx) => ({
+                id: `section_${idx}`,
+                title: section.title,
+                icon: section.icon || '📝',
+                content: {
+                    whyCare: section.whyCare,
+                    concepts: section.keyPoints.map((point, i) => ({
+                        title: `Key Point ${i + 1}`,
+                        preview: point.substring(0, 60) + '...',
+                        details: point
+                    })),
+                    examples: [{
+                        title: 'From Your Content',
+                        code: '',
+                        explanation: section.realWorldExample
+                    }],
+                    quiz: section.practiceQuestion
+                }
+            }))
+        };
+    }
+
+    // Universal Topic Search
+    async searchTopic() {
+        const searchInput = document.getElementById('topicSearch');
+        const query = searchInput.value.trim();
+
+        if (!query) {
+            this.showToast('Please enter a topic to learn about', 'info');
+            return;
+        }
+
+        // Check API key
+        if (!this.CLAUDE_API_KEY) {
+            this.showToast('Please set your Claude API key first', 'error');
+            this.checkApiKey();
+            return;
+        }
+
+        // Show loading
+        searchInput.disabled = true;
+        this.showToast('Creating your personalized lesson... ⏳', 'info');
+
+        try {
+            // Generate lesson with AI
+            const lesson = await this.generateLessonWithAI(query);
+
+            // Save to user topics
+            this.userProgress.userTopics.push(lesson);
+            this.saveProgress();
+
+            // Load the lesson
+            this.loadDynamicTopic(lesson.id);
+
+            // Clear search
+            searchInput.value = '';
+
+            this.showToast('Lesson created! Happy learning! 🎉', 'success');
+
+        } catch (error) {
+            console.error('Topic search error:', error);
+            this.showToast('Failed to create lesson. Please try again.', 'error');
+        } finally {
+            searchInput.disabled = false;
+        }
+    }
+
+    async generateLessonWithAI(topic) {
+        const response = await fetch(this.CLAUDE_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': this.CLAUDE_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 4000,
+                messages: [{
+                    role: 'user',
+                    content: `Create an interactive learning lesson about "${topic}".
+
+You are a friendly, enthusiastic tutor. Structure the lesson as JSON with this EXACT format:
+
+{
+  "title": "Topic Title",
+  "icon": "relevant emoji",
+  "subtitle": "short engaging description",
+  "description": "what learner will know after",
+  "sections": [
+    {
+      "title": "Section Name",
+      "icon": "emoji",
+      "whyCare": "Why this matters in real life (2-3 sentences)",
+      "keyPoints": [
+        "Point 1 explained conversationally",
+        "Point 2 with real-world relevance",
+        "Point 3 with practical examples"
+      ],
+      "realWorldExample": "Concrete example they can relate to",
+      "practiceQuestion": {
+        "question": "Scenario-based question",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctIndex": 0,
+        "explanation": "Why this answer is correct"
+      }
+    }
+  ]
+}
+
+Make it:
+- Conversational like explaining to a friend
+- Include 2-3 sections
+- Use real-world examples people care about
+- Make practice questions interesting scenarios
+- Be engaging and fun!
+
+Return ONLY valid JSON, no other text.`
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const aiResponse = data.content[0].text;
+
+        // Parse JSON from AI response
+        let lessonData;
+        try {
+            // Try to extract JSON if there's extra text
+            const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+            lessonData = JSON.parse(jsonMatch ? jsonMatch[0] : aiResponse);
+        } catch (e) {
+            throw new Error('Invalid lesson format from AI');
+        }
+
+        // Create module structure
+        const moduleId = `topic_${Date.now()}`;
+        return {
+            id: moduleId,
+            title: lessonData.title,
+            icon: lessonData.icon || '📖',
+            subtitle: lessonData.subtitle,
+            description: lessonData.description,
+            duration: 'Custom',
+            difficulty: 'AI-Generated',
+            isDynamic: true,
+            sections: lessonData.sections.map((section, idx) => ({
+                id: `section_${idx}`,
+                title: section.title,
+                icon: section.icon || '📝',
+                content: {
+                    whyCare: section.whyCare,
+                    concepts: section.keyPoints.map((point, i) => ({
+                        title: `Key Point ${i + 1}`,
+                        preview: point.substring(0, 60) + '...',
+                        details: point
+                    })),
+                    examples: [{
+                        title: 'Real-World Example',
+                        code: '',
+                        explanation: section.realWorldExample
+                    }],
+                    quiz: section.practiceQuestion
+                }
+            }))
+        };
+    }
+
+    loadDynamicTopic(topicId) {
+        // Find in user topics
+        const topic = this.userProgress.userTopics.find(t => t.id === topicId);
+        if (!topic) return;
+
+        this.currentModule = topic;
+        this.currentSection = 0;
+
+        // Hide welcome screen
+        document.getElementById('welcomeScreen').classList.add('hidden');
+        document.getElementById('moduleContainer').classList.remove('hidden');
+
+        // Render module
+        this.renderModule();
+
+        // Update navigation
+        this.renderNavigation();
+
+        // Close sidebar on mobile
+        if (window.innerWidth <= 1024) {
+            this.closeSidebar();
+        }
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     loadModule(moduleId) {
@@ -706,6 +1210,10 @@ class LearnHub {
                         <p class="concept-preview">${concept.preview}</p>
                         <div class="concept-details hidden">
                             <p>${concept.details}</p>
+                            <button class="btn btn-primary btn-sm ask-claude-btn"
+                                    onclick="event.stopPropagation(); app.askAboutConcept('${concept.title}')">
+                                Ask Claude 🤖
+                            </button>
                         </div>
                     </div>
                 `;
@@ -891,6 +1399,161 @@ class LearnHub {
         this.renderNavigation();
         document.getElementById('topProgressFill').style.width = '0%';
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // AI Chat
+    checkApiKey() {
+        if (!this.CLAUDE_API_KEY) {
+            // Prompt for API key
+            setTimeout(() => {
+                const key = prompt('Enter your Claude API key to enable AI tutoring:\n\n(Get one at: https://console.anthropic.com/)');
+                if (key) {
+                    this.CLAUDE_API_KEY = key;
+                    localStorage.setItem('claudeApiKey', key);
+                    this.showToast('API key saved! AI tutor is ready.', 'success');
+                }
+            }, 2000);
+        }
+    }
+
+    toggleChat() {
+        this.isChatOpen = !this.isChatOpen;
+        const sidebar = document.getElementById('chatSidebar');
+
+        if (this.isChatOpen) {
+            sidebar.classList.add('open');
+        } else {
+            sidebar.classList.remove('open');
+        }
+    }
+
+    async sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Check API key
+        if (!this.CLAUDE_API_KEY) {
+            this.showToast('Please set your Claude API key first', 'error');
+            this.checkApiKey();
+            return;
+        }
+
+        // Clear input
+        input.value = '';
+        input.style.height = 'auto';
+
+        // Add user message
+        this.addChatMessage(message, 'user');
+
+        // Track for achievement
+        this.userProgress.chatMessages = (this.userProgress.chatMessages || 0) + 1;
+        this.saveProgress();
+        this.checkAchievements();
+
+        // Show typing indicator
+        const typingId = this.showTypingIndicator();
+
+        try {
+            // Call Claude API
+            const response = await fetch(this.CLAUDE_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': this.CLAUDE_API_KEY,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-5-sonnet-20241022',
+                    max_tokens: 1024,
+                    messages: [{
+                        role: 'user',
+                        content: `You are a friendly, enthusiastic tutor helping someone learn programming. Be conversational and informal (like explaining to a friend). Keep responses concise but helpful. Use examples when possible.\n\nStudent question: ${message}\n\n${this.currentModule ? `Context: They're currently learning about "${this.currentModule.sections[this.currentSection].title}" in the "${this.currentModule.title}" module.` : ''}`
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`API error: ${response.status}`);
+            }
+
+            const data = await response.json();
+            const reply = data.content[0].text;
+
+            // Remove typing indicator
+            this.removeTypingIndicator(typingId);
+
+            // Add AI response
+            this.addChatMessage(reply, 'bot');
+
+        } catch (error) {
+            console.error('Chat error:', error);
+            this.removeTypingIndicator(typingId);
+            this.addChatMessage('Oops! I had trouble connecting. Make sure your API key is valid and you have internet connection.', 'bot');
+            this.showToast('Failed to get AI response', 'error');
+        }
+    }
+
+    addChatMessage(text, sender) {
+        const messagesContainer = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${sender}-message`;
+        messageDiv.innerHTML = `
+            <div class="message-avatar">${sender === 'user' ? '👤' : '🤖'}</div>
+            <div class="message-content">
+                <p>${this.formatChatMessage(text)}</p>
+            </div>
+        `;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    showTypingIndicator() {
+        const messagesContainer = document.getElementById('chatMessages');
+        const typingDiv = document.createElement('div');
+        const id = `typing-${Date.now()}`;
+        typingDiv.id = id;
+        typingDiv.className = 'chat-message bot-message';
+        typingDiv.innerHTML = `
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+                <div class="typing-indicator">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+            </div>
+        `;
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        return id;
+    }
+
+    removeTypingIndicator(id) {
+        const element = document.getElementById(id);
+        if (element) element.remove();
+    }
+
+    formatChatMessage(text) {
+        // Simple markdown-like formatting
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/\n/g, '<br>');
+    }
+
+    askAboutConcept(conceptTitle) {
+        // Open chat
+        if (!this.isChatOpen) {
+            this.toggleChat();
+        }
+
+        // Pre-fill question
+        const input = document.getElementById('chatInput');
+        input.value = `Can you explain ${conceptTitle} in more detail with examples?`;
+        input.focus();
     }
 
     // Text-to-Speech

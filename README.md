@@ -1,6 +1,6 @@
 # 🚀 LearnHub - Interactive Learning Platform
 
-An engaging, mobile-first web app for interactive learning with gamification and progress tracking.
+An engaging, mobile-first web app for interactive learning with AI tutoring, gamification, and progress tracking. Learn ANY topic by searching or uploading your own study materials!
 
 ## ✨ Features
 
@@ -10,6 +10,18 @@ An engaging, mobile-first web app for interactive learning with gamification and
 - **Real-World Examples** - Practical applications you can use immediately
 - **Interactive Quizzes** - Scenario-based challenges with instant feedback
 - **Mini-Challenges** - Apply what you learned with hands-on exercises
+
+### AI-Powered Tutoring
+- **Built-in AI Chat** - Ask questions in real-time using Claude API
+- **Context-Aware** - AI knows what you're learning and provides relevant help
+- **Conversational Style** - Feels like chatting with a knowledgeable friend
+- **"Ask Claude" Buttons** - Quick access to AI help on any concept
+
+### Universal Learning
+- **Search ANY Topic** - Type any subject and AI generates a complete lesson
+- **Upload Study Materials** - Drop PDFs, TXT files, DOC files, or images
+- **AI Content Extraction** - AI analyzes your files and creates interactive lessons
+- **Learning History** - All your searched topics and uploaded files saved
 
 ### Gamification
 - **XP System** - Earn experience points for learning activities
@@ -21,7 +33,7 @@ An engaging, mobile-first web app for interactive learning with gamification and
 ### User Experience
 - **Dark Mode** - Easy on the eyes, switch anytime
 - **Text-to-Speech** - Listen to content instead of reading
-- **Offline Support** - Works completely offline after first load
+- **Offline Support** - Works offline after first load (except AI chat)
 - **Progress Saving** - All progress saved locally
 - **Mobile-First Design** - Perfect on phones, tablets, and desktops
 - **Smooth Animations** - Delightful transitions and feedback
@@ -35,7 +47,17 @@ Just download these three files to a folder:
 - `styles.css`
 - `app.js`
 
-### 2. Open the App
+### 2. Get Your Claude API Key (for AI Tutor)
+
+1. Go to [https://console.anthropic.com/](https://console.anthropic.com/)
+2. Sign up or log in
+3. Navigate to "API Keys" section
+4. Create a new API key
+5. Copy the key (you'll need it when you first use the AI tutor)
+
+**Note:** You can use the app without an API key, but the AI chat won't work.
+
+### 3. Open the App
 
 Simply open `index.html` in your web browser:
 - **Easy Way:** Double-click the file
@@ -64,14 +86,25 @@ Then open: `http://localhost:8000`
 
 1. **Open the app** - You'll see a welcome screen
 2. **Click "Start Learning"** - Jump into your first module
+3. **API Key Prompt** - Enter your Claude API key when prompted (or skip for now)
 
 ### Learning Features
 
-- **📚 Navigate Modules** - Click on modules in the sidebar
+- **🔍 Search Topics** - Type any subject to learn about (e.g., "Ancient Rome", "Quantum Physics")
+- **📤 Upload Files** - Drag & drop PDFs, TXT, DOC, or image files to create lessons
+- **📚 Navigate Modules** - Click on modules in the sidebar (My Topics or Featured Paths)
 - **💡 Reveal Concepts** - Click on concept cards to expand details
+- **🤖 Ask Questions** - Use the chat icon to talk to your AI tutor
 - **📝 Take Quizzes** - Test your knowledge with interactive quizzes
 - **🔊 Listen** - Click "Listen" button for text-to-speech
 - **🌙 Toggle Dark Mode** - Click the moon/sun icon
+
+### File Upload Supported Formats
+
+- **Text Files (.txt)** - Direct text extraction
+- **PDF Files (.pdf)** - Manual content input (paste key text from PDF)
+- **Word Documents (.doc, .docx)** - Text extraction attempt
+- **Images (.jpg, .png)** - For future OCR support (currently note-only)
 
 ### Earning Progress
 
@@ -153,7 +186,8 @@ createMySection() {
 
 ## 🔒 Privacy & Data
 
-- **All data stored locally** - Nothing sent to external servers
+- **All data stored locally** - Nothing sent to external servers (except AI chat)
+- **Your API key** - Stored in browser localStorage
 - **Progress data** - Saved in localStorage
 - **No tracking** - No analytics or tracking scripts
 - **No account needed** - Use immediately, no signup required
@@ -167,6 +201,7 @@ createMySection() {
 - Responsive CSS Grid and Flexbox
 - LocalStorage API for persistence
 - Web Speech API for text-to-speech
+- Fetch API for Claude integration
 
 ### File Structure
 ```
@@ -176,6 +211,14 @@ learnhub/
 ├── app.js          # Application logic
 └── README.md       # This file
 ```
+
+### API Integration
+
+The app uses Claude 3.5 Sonnet for AI tutoring:
+- **Endpoint:** `https://api.anthropic.com/v1/messages`
+- **Model:** `claude-3-5-sonnet-20241022`
+- **Max tokens:** 1024 per response
+- **Context:** Includes current learning module info
 
 ## 📖 Available Learning Modules
 
@@ -206,17 +249,24 @@ Unlock these achievements as you learn:
 - 🌟 **Rising Star** - Reach level 5
 - 👑 **Expert** - Reach level 10
 - 🎓 **Quiz Master** - Perfect quiz score
+- 🤔 **Curious Mind** - Ask AI tutor a question
 
 ## 🎯 Learning Tips
 
 1. **Take Your Time** - No rush, learn at your own pace
-2. **Try the Challenges** - Best way to solidify learning
-3. **Daily Streaks** - Even 10 minutes a day helps!
-4. **Click Everything** - Explore all the interactive elements
-5. **Listen Mode** - Great for reviewing while multitasking
-6. **Review Regularly** - Revisit concepts to reinforce learning
+2. **Use the AI Tutor** - Don't hesitate to ask questions
+3. **Try the Challenges** - Best way to solidify learning
+4. **Daily Streaks** - Even 10 minutes a day helps!
+5. **Click Everything** - Explore all the interactive elements
+6. **Listen Mode** - Great for reviewing while multitasking
 
 ## 🐛 Troubleshooting
+
+### AI Chat Not Working
+- Check your API key is valid
+- Ensure you have internet connection
+- Verify you have API credits remaining
+- Check browser console for errors
 
 ### Text-to-Speech Not Working
 - Make sure your browser supports Web Speech API
@@ -263,10 +313,11 @@ Need help?
 - Check this README
 - Review code comments in `app.js`
 - Test in browser developer console
+- Check Claude API documentation
 
 ## 🎉 Have Fun Learning!
 
-Remember: Learning should be enjoyable, not a chore. Take breaks, celebrate small wins, and have fun exploring!
+Remember: Learning should be enjoyable, not a chore. Take breaks, celebrate small wins, and don't be afraid to ask questions!
 
 ---
 
