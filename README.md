@@ -1,6 +1,6 @@
 # 🚀 LearnHub - Interactive Learning Platform
 
-An engaging, mobile-first web app for interactive learning with AI tutoring, gamification, and progress tracking.
+An engaging, mobile-first web app for interactive learning with AI tutoring, gamification, and progress tracking. Learn ANY topic by searching or uploading your own study materials!
 
 ## ✨ Features
 
@@ -16,6 +16,12 @@ An engaging, mobile-first web app for interactive learning with AI tutoring, gam
 - **Context-Aware** - AI knows what you're learning and provides relevant help
 - **Conversational Style** - Feels like chatting with a knowledgeable friend
 - **"Ask Claude" Buttons** - Quick access to AI help on any concept
+
+### Universal Learning
+- **Search ANY Topic** - Type any subject and AI generates a complete lesson
+- **Upload Study Materials** - Drop PDFs, TXT files, DOC files, or images
+- **AI Content Extraction** - AI analyzes your files and creates interactive lessons
+- **Learning History** - All your searched topics and uploaded files saved
 
 ### Gamification
 - **XP System** - Earn experience points for learning activities
@@ -84,12 +90,21 @@ Then open: `http://localhost:8000`
 
 ### Learning Features
 
-- **📚 Navigate Modules** - Click on modules in the sidebar
+- **🔍 Search Topics** - Type any subject to learn about (e.g., "Ancient Rome", "Quantum Physics")
+- **📤 Upload Files** - Drag & drop PDFs, TXT, DOC, or image files to create lessons
+- **📚 Navigate Modules** - Click on modules in the sidebar (My Topics or Featured Paths)
 - **💡 Reveal Concepts** - Click on concept cards to expand details
 - **🤖 Ask Questions** - Use the chat icon to talk to your AI tutor
 - **📝 Take Quizzes** - Test your knowledge with interactive quizzes
 - **🔊 Listen** - Click "Listen" button for text-to-speech
 - **🌙 Toggle Dark Mode** - Click the moon/sun icon
+
+### File Upload Supported Formats
+
+- **Text Files (.txt)** - Direct text extraction
+- **PDF Files (.pdf)** - Manual content input (paste key text from PDF)
+- **Word Documents (.doc, .docx)** - Text extraction attempt
+- **Images (.jpg, .png)** - For future OCR support (currently note-only)
 
 ### Earning Progress
 

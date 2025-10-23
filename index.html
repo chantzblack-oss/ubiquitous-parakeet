@@ -117,6 +117,28 @@
                                     <span class="icon">🚀</span>
                                 </button>
                             </div>
+
+                            <div class="divider-text">OR</div>
+
+                            <!-- File Upload Section -->
+                            <div class="upload-section">
+                                <div class="upload-dropzone" id="uploadDropzone">
+                                    <input
+                                        type="file"
+                                        id="fileInput"
+                                        class="file-input"
+                                        accept=".pdf,.txt,.doc,.docx,.jpg,.jpeg,.png"
+                                        onchange="app.handleFileUpload(event)"
+                                    />
+                                    <div class="upload-content">
+                                        <div class="upload-icon">📄</div>
+                                        <p class="upload-title">Upload Your Study Materials</p>
+                                        <p class="upload-text">Drop files here or click to browse</p>
+                                        <p class="upload-formats">PDF, TXT, DOC, DOCX, Images (JPG, PNG)</p>
+                                    </div>
+                                </div>
+                            </div>
+
                             <p class="search-hint">Or explore our featured learning paths below</p>
                         </div>
                     </div>

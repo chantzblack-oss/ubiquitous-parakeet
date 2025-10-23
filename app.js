@@ -52,6 +52,43 @@ class LearnHub {
 
         // Update streak
         this.updateStreak();
+
+        // Set up file upload drag and drop
+        this.setupFileUpload();
+    }
+
+    setupFileUpload() {
+        const dropzone = document.getElementById('uploadDropzone');
+        if (!dropzone) return;
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        // Highlight dropzone when dragging over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => {
+                dropzone.classList.add('drag-over');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, () => {
+                dropzone.classList.remove('drag-over');
+            }, false);
+        });
+
+        // Handle dropped files
+        dropzone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                this.processUploadedFile(files[0]);
+            }
+        }, false);
     }
 
     setupEventListeners() {
@@ -670,6 +707,232 @@ class LearnHub {
                 </li>
             `;
         }).join('');
+    }
+
+    // File Upload Handling
+    handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            this.processUploadedFile(file);
+        }
+    }
+
+    async processUploadedFile(file) {
+        // Check API key
+        if (!this.CLAUDE_API_KEY) {
+            this.showToast('Please set your Claude API key first', 'error');
+            this.checkApiKey();
+            return;
+        }
+
+        // Validate file type
+        const validTypes = [
+            'text/plain',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/jpeg',
+            'image/jpg',
+            'image/png'
+        ];
+
+        if (!validTypes.includes(file.type) && !file.name.match(/\.(txt|pdf|doc|docx|jpg|jpeg|png)$/i)) {
+            this.showToast('Unsupported file type. Please upload PDF, TXT, DOC, DOCX, or images.', 'error');
+            return;
+        }
+
+        // Show loading
+        this.showToast(`Processing ${file.name}... ⏳`, 'info');
+
+        try {
+            // Extract text from file
+            const content = await this.extractTextFromFile(file);
+
+            if (!content || content.trim().length < 50) {
+                this.showToast('Could not extract enough content from file. Try a text-based file.', 'error');
+                return;
+            }
+
+            // Generate lesson from content
+            const lesson = await this.generateLessonFromContent(content, file.name);
+
+            // Save to user topics
+            this.userProgress.userTopics.push(lesson);
+            this.saveProgress();
+
+            // Load the lesson
+            this.loadDynamicTopic(lesson.id);
+
+            this.showToast(`Lesson created from ${file.name}! 🎉`, 'success');
+
+        } catch (error) {
+            console.error('File processing error:', error);
+            this.showToast('Failed to process file. Please try again.', 'error');
+        }
+    }
+
+    async extractTextFromFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                const content = e.target.result;
+
+                // Handle different file types
+                if (file.type === 'text/plain') {
+                    // Plain text file
+                    resolve(content);
+                } else if (file.type === 'application/pdf') {
+                    // For PDF, we'll use a simple approach
+                    // In production, you'd use PDF.js library
+                    // For now, we'll ask AI to handle it differently
+                    resolve('PDF_FILE:' + file.name);
+                } else if (file.type.startsWith('image/')) {
+                    // For images, we'll use Claude's vision capabilities
+                    resolve('IMAGE_FILE:' + file.name + ':' + content);
+                } else {
+                    // Try to read as text for DOC/DOCX
+                    resolve(content);
+                }
+            };
+
+            reader.onerror = () => reject(new Error('Failed to read file'));
+
+            // Read file based on type
+            if (file.type.startsWith('image/')) {
+                reader.readAsDataURL(file);
+            } else {
+                reader.readAsText(file);
+            }
+        });
+    }
+
+    async generateLessonFromContent(content, fileName) {
+        const isPDF = content.startsWith('PDF_FILE:');
+        const isImage = content.startsWith('IMAGE_FILE:');
+
+        let prompt;
+
+        if (isPDF) {
+            // For PDFs, ask user to describe or paste content
+            const userDescription = prompt(`I detected a PDF file. Please paste some key text from the PDF or describe what you want to learn from it:`);
+            if (!userDescription) {
+                throw new Error('PDF processing cancelled');
+            }
+            content = userDescription;
+        }
+
+        prompt = `I have this learning content from a file called "${fileName}":
+
+${isImage ? '[Note: This is from an image file, so extract visible text and concepts]' : ''}
+
+Content:
+${content.substring(0, 8000)}
+
+${content.length > 8000 ? '[Content truncated...]' : ''}
+
+Create an interactive learning lesson based on this content. Structure it as JSON with this EXACT format:
+
+{
+  "title": "Topic Title based on content",
+  "icon": "relevant emoji",
+  "subtitle": "short engaging description",
+  "description": "what learner will know after",
+  "sections": [
+    {
+      "title": "Section Name",
+      "icon": "emoji",
+      "whyCare": "Why this matters in real life (2-3 sentences)",
+      "keyPoints": [
+        "Point 1 from the content explained conversationally",
+        "Point 2 from the content with real-world relevance",
+        "Point 3 from the content with practical examples"
+      ],
+      "realWorldExample": "Concrete example they can relate to based on the content",
+      "practiceQuestion": {
+        "question": "Scenario-based question about the content",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctIndex": 0,
+        "explanation": "Why this answer is correct"
+      }
+    }
+  ]
+}
+
+Make it:
+- Conversational like explaining to a friend
+- Include 2-3 sections based on the content
+- Extract the most important concepts from the material
+- Make practice questions test understanding of the content
+- Be engaging and fun!
+
+Return ONLY valid JSON, no other text.`;
+
+        const response = await fetch(this.CLAUDE_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': this.CLAUDE_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'claude-3-5-sonnet-20241022',
+                max_tokens: 4000,
+                messages: [{
+                    role: 'user',
+                    content: prompt
+                }]
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const aiResponse = data.content[0].text;
+
+        // Parse JSON from AI response
+        let lessonData;
+        try {
+            const jsonMatch = aiResponse.match(/\{[\s\S]*\}/);
+            lessonData = JSON.parse(jsonMatch ? jsonMatch[0] : aiResponse);
+        } catch (e) {
+            throw new Error('Invalid lesson format from AI');
+        }
+
+        // Create module structure
+        const moduleId = `file_${Date.now()}`;
+        return {
+            id: moduleId,
+            title: lessonData.title,
+            icon: lessonData.icon || '📄',
+            subtitle: lessonData.subtitle,
+            description: lessonData.description,
+            duration: 'From File',
+            difficulty: 'Custom Content',
+            isDynamic: true,
+            sourceFile: fileName,
+            sections: lessonData.sections.map((section, idx) => ({
+                id: `section_${idx}`,
+                title: section.title,
+                icon: section.icon || '📝',
+                content: {
+                    whyCare: section.whyCare,
+                    concepts: section.keyPoints.map((point, i) => ({
+                        title: `Key Point ${i + 1}`,
+                        preview: point.substring(0, 60) + '...',
+                        details: point
+                    })),
+                    examples: [{
+                        title: 'From Your Content',
+                        code: '',
+                        explanation: section.realWorldExample
+                    }],
+                    quiz: section.practiceQuestion
+                }
+            }))
+        };
     }
 
     // Universal Topic Search
