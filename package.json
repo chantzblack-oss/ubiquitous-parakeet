@@ -1,0 +1,16 @@
+{
+  "name": "learnhub",
+  "version": "1.0.0",
+  "description": "Interactive Learning Platform",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": ["learning", "education", "ai"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
