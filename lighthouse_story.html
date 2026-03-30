@@ -3,554 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Light at Grímsey — Agent Forge Storyteller</title>
+<title>Cold Ignition</title>
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#d4d4d8;font-family:'Merriweather',Georgia,serif;font-size:16px;line-height:1.8}
-.container{max-width:800px;margin:0 auto;padding:20px}
-.hero{text-align:center;padding:60px 20px;border-bottom:1px solid #222}
-.hero h1{font-family:'Playfair Display',serif;font-size:2.5em;color:#fff;margin-bottom:16px;font-weight:900}
-.hero .premise{font-style:italic;color:#a0a0b0;font-size:1.1em;max-width:600px;margin:0 auto 20px}
-.hero .meta{color:#666;font-size:0.85em}
-.toc{padding:30px 20px;border-bottom:1px solid #1a1a2a}
-.toc h2{font-family:'Playfair Display',serif;color:#fff;margin-bottom:12px;font-size:1.3em}
-.toc a{color:#6b8aad;text-decoration:none;display:block;padding:4px 0;font-size:0.9em}
-.toc a:hover{color:#88ccff}
-.round-header{font-family:'Playfair Display',serif;font-size:1.8em;color:#fff;text-align:center;padding:40px 0 20px;border-top:1px solid #1a1a2a;margin-top:40px}
-.section{margin:30px 0;padding:24px;background:#111118;border-radius:8px;border-left:3px solid #333}
-.section.leader{border-left-color:#88ccff}
-.section.worker{border-left-color:#88ff88}
-.section.critic{border-left-color:#ffcc44}
-.agent-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.agent-header .icon{font-size:1.4em}
-.agent-header .name{font-family:'Playfair Display',serif;font-weight:700;font-size:1.2em}
-.agent-header .role{color:#666;font-size:0.85em;text-transform:uppercase;letter-spacing:1px}
-.section h3{font-family:'Playfair Display',serif;color:#fff;font-size:1.2em;margin:20px 0 10px}
-.section h4{color:#a0b0c0;font-size:1em;margin:16px 0 8px;font-weight:700}
-.section p{margin:10px 0;color:#c8c8d0}
-.section strong{color:#fff}
-.section em{color:#b0b8c8}
-.section a{color:#6b8aad;text-decoration:underline}
-.section hr{border:none;border-top:1px solid #222;margin:20px 0}
-.mention{color:#88ccff;font-weight:600}
-.interrupted{text-align:center;padding:40px 20px;color:#666;font-style:italic;border-top:1px solid #1a1a2a;margin-top:40px}
-.footer{text-align:center;padding:30px;color:#444;font-size:0.8em}
+body{background:#0a0a0f;color:#c8c8d0;font-family:'Merriweather',Georgia,serif;font-size:17px;line-height:2}
+.story{max-width:660px;margin:0 auto;padding:40px 24px 80px}
+.title-block{text-align:center;padding:60px 0 50px;border-bottom:1px solid #1a1a2a}
+.title-block h1{font-family:'Playfair Display',serif;font-size:2.6em;color:#fff;margin-bottom:20px;font-weight:900;letter-spacing:-0.02em}
+.title-block .epigraph{font-style:italic;color:#666;max-width:480px;margin:0 auto;font-size:0.9em;line-height:1.7}
+.break{text-align:center;padding:36px 0;color:#333;font-size:1em;letter-spacing:8px}
+p{margin:0 0 1.5em;text-indent:2em}
+p.first{text-indent:0}
+p.short{text-indent:0;margin:0 0 1.5em}
+p.logentry{text-indent:0;font-style:italic;color:#999;padding-left:1.8em;border-left:2px solid #1a1a2a;margin:1em 0}
+em{color:#a8b0c0}
+.end-mark{text-align:center;padding:50px 0 10px;color:#333;font-size:1.4em;letter-spacing:4px}
+.colophon{text-align:center;padding:50px 0 20px;border-top:1px solid #111;margin-top:40px;color:#333;font-size:0.78em;line-height:2}
 @media(max-width:600px){
-  .hero h1{font-size:1.8em}
-  .round-header{font-size:1.4em}
-  .container{padding:12px}
-  .section{padding:16px}
-  body{font-size:15px}
+.story{padding:28px 20px 60px}
+.title-block h1{font-size:2em}
+body{font-size:16px;line-height:1.9}
 }
 </style>
 </head>
 <body>
-<div class="container">
-<div class="hero">
-<h1>The Light at Grímsey</h1>
-<div class="premise">"A lighthouse keeper discovers that the light isn't guiding ships — it's keeping something in the deep ocean asleep. The bulb is dying."</div>
-<div class="meta">Agent Forge Storyteller • 5 Agents • 3 Rounds • Opus 4.6</div>
-</div>
-<div class="toc">
-<h2>Contents</h2>
-<a href="#round1" style="color:#fff;font-weight:700;margin-top:8px">Round 1</a>
-<a href="#s0">🎭 Narrator (leader)</a>
-<a href="#s1">🌍 Worldbuilder (worker)</a>
-<a href="#s2">👤 Charactersmith (worker)</a>
-<a href="#s3">📐 Plotweaver (worker)</a>
-<a href="#s4">✏️ Editor (critic)</a>
-<a href="#s5">🎭 Narrator (leader)</a>
-<a href="#round2" style="color:#fff;font-weight:700;margin-top:8px">Round 2</a>
-<a href="#s6">🎭 Narrator (leader)</a>
-<a href="#s7">🌍 Worldbuilder (worker)</a>
-<a href="#s8">👤 Charactersmith (worker)</a>
-<a href="#s9">📐 Plotweaver (worker)</a>
-<a href="#s10">✏️ Editor (critic)</a>
-<a href="#s11">🎭 Narrator (leader)</a>
-<a href="#round3" style="color:#fff;font-weight:700;margin-top:8px">Round 3</a>
-<a href="#s12">🎭 Narrator (leader)</a>
-<a href="#s13">🌍 Worldbuilder (worker)</a>
-<a href="#s14">👤 Charactersmith (worker)</a>
-</div>
-<div class="round-header" id="round1">Round 1</div>
-<div class="section leader" id="s0">
-<div class="agent-header"><span class="icon">🎭</span><span class="name" style="color:#88ccff">Narrator</span><span class="role">leader</span></div>
-<h3>Round 1/3 — Foundation Layer</h3>
-<p>The premise is a clock disguised as a horror story. The dying bulb is our ticking bomb. Everything we build serves that countdown.</p>
-<hr>
-<h4>Assignments</h4>
-<p><strong><span class="mention">@Worldbuilder</span></strong> — Deliver the <em>setting bible</em> (≤300 words).
-1. The lighthouse: isolated, late-season, specific geography. Research real Fresnel lens mechanics — how they fail, what &quot;dying&quot; looks like (dimming? flickering? color shift?). Ground the supernatural in optical science.
-2. The deep: what geological or oceanic feature sits beneath? Trench, caldera, subduction zone? One concrete detail that makes the &quot;something below&quot; feel ancient and plausible.
-3. Search: Fresnel lens deterioration, famous isolated lighthouses (Flannan Isles, Tillamook Rock), deep-ocean bioluminescence.</p>
-<p><strong><span class="mention">@Charactersmith</span></strong> — Deliver the <em>keeper profile</em> (≤250 words).
-1. Name, age, reason for isolation. What did they come here to escape? That wound must mirror the story&#x27;s theme: the cost of vigilance.
-2. Their relationship to the light — ritual, obsession, or grudging duty?
-3. The moment they first <em>noticed</em> something wrong. Not the horror — the doubt before it.</p>
-<p><strong><span class="mention">@Plotweaver</span></strong> — Deliver the <em>three-act skeleton</em> (≤200 words).
-1. Structure around the bulb&#x27;s remaining lifespan. How long? Hours? Days?
-2. Identify three escalation beats: discovery, failed fix, impossible choice.
-3. The ending must cost something. No rescues. What does the keeper sacrifice?</p>
-<p><strong><span class="mention">@Editor</span></strong> — You review all three deliverables next round. Prepare now:
-1. Flag any cliché (Lovecraft pastiche, &quot;eldritch&quot; shortcuts, convenient madness).
-2. Identify where the three deliverables will likely contradict each other.
-3. Hold us to <em>earned</em> dread, not borrowed.</p>
-<p>Deliver in Round 2. Precision over volume.</p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s1">
-<div class="agent-header"><span class="icon">🌍</span><span class="name" style="color:#88ff88">Worldbuilder</span><span class="role">worker</span></div>
-<h3>SETTING BIBLE: STRANDARKLETTUR LIGHT</h3>
-<p><strong>The most important detail:</strong> the light will not fade to black. It will sour, sag, and amber — then die instantly on a cold ignition, without warning. The keeper won&#x27;t watch it go. They&#x27;ll just flip the switch one evening and hear silence.</p>
-<hr>
-<h4>The Lighthouse</h4>
-<p>Strandarklettur Light: a 23-meter cast-iron tower on a basalt sea stack, 2.1 km off Grímsey, Iceland — the only inhabited island straddling the Arctic Circle. Built 1927, Danish-engineered. Accessible solely by rope ladder from a supply boat, weather permitting. By late November, the island receives under three hours of grey twilight. <a href="https://en.wikipedia.org/wiki/Flannan_Isles_Lighthouse" target="_blank">Flannan Isles Lighthouse</a> and <a href="https://en.wikipedia.org/wiki/Tillamook_Rock_Light" target="_blank">Tillamook Rock</a> served as isolation models.</p>
-<p>The optic: a third-order <a href="https://www.nps.gov/articles/fresnel-lens.htm" target="_blank">Fresnel lens</a> — 500mm focal length, 450 kg of hand-ground prisms in brass armature — turning on a mercury float bath. Light source: a 1000-watt tungsten halogen lamp. The backup lamp&#x27;s filament snapped during rough transit six weeks ago. Resupply: eleven days out.</p>
-<h4>How the Light Dies</h4>
-<p>The filament is thinning unevenly at <a href="https://www.prolampsales.com/blogs/specialty-architectural-lighting/is-notching-blowing-out-your-bulbs-early" target="_blank">hot spots where the halogen cycle can no longer redeposit evaporated tungsten</a>. The quartz envelope shows amber-brown bloom. Color temperature is dropping from ~3000K toward ~2400K: white light souring to jaundiced amber. Output has fallen ~30%. The beam occasionally <em>sags</em> — not a flicker, a half-second dip, like a held breath. Final failure will arrive on a <a href="https://spark.iop.org/breaking-bulbs" target="_blank">cold ignition: inrush current (10× operating amperage) will snap the weakened filament</a>. No slow fade. Just dark.</p>
-<p><span class="mention">@Charactersmith</span> — that sag is the keeper&#x27;s &quot;first doubt&quot; moment. The light has never breathed before.</p>
-<h4>The Deep</h4>
-<p>The tower sits above the <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">Tjörnes Fracture Zone</a> — a 120km transform fault connecting Iceland&#x27;s Northern Volcanic Zone to the <a href="https://en.wikipedia.org/wiki/Mid-Atlantic_Ridge" target="_blank">Kolbeinsey Ridge</a>. Directly beneath: an unnamed submarine caldera at ~1,800m depth, a collapsed Pleistocene-era shield volcano. The nearby <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">Grimsey hydrothermal vent field</a> — one of the few documented high-temperature boiling sites on the seafloor inside the Arctic Circle — establishes the geology. Sonar surveys flagged anomalous thermal readings (2.7°C above ambient) in the caldera, but funding lapsed before follow-up dives.</p>
-<p>The caldera vents exhale slow curtains of mineral-rich water — and something else. A rhythmic <a href="https://oceanexplorer.noaa.gov/wp-content/uploads/2025/04/bioluminescent-creatures.pdf" target="_blank">bioluminescent</a> pulse, once per ninety seconds, visible only from directly above. Deep-ocean bioluminescence overwhelmingly occurs in blue wavelengths because blue light attenuates least over distance — <a href="https://www.whoi.edu/ocean-learning-hub/ocean-topics/how-the-ocean-works/ocean-zones/abyssal-zone/" target="_blank">90% of abyssal fauna produce it</a>. But this pulse isn&#x27;t blue. It&#x27;s amber. The same dying amber as the lamp.</p>
-<p>Grímsey&#x27;s elders call it <em>Svefndjúp</em> — &quot;the sleep-deep.&quot; The fishing boats won&#x27;t anchor near it. They never have.</p>
-<hr>
-<h4>Recommendations for <span class="mention">@Plotweaver</span></h4>
-<p>1. <strong>The eleven-day countdown is the story clock.</strong> Resupply is 11 days away. The bulb won&#x27;t last 11 days. Compress or expand this gap to control pacing, but the keeper must <em>know</em> the math doesn&#x27;t work.
-2. <strong>The amber match is the reveal hinge.</strong> When the keeper finally looks down instead of out, they see the caldera pulsing in the exact color temperature of the dying bulb — ~2400K. The light above and the light below are the same light. The lens isn&#x27;t projecting out to sea. It&#x27;s projecting <em>down.</em>
-3. <strong>The 90-second pulse is a breathing rhythm.</strong> Something that large, breathing that slowly, has been asleep a very long time.</p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s2">
-<div class="agent-header"><span class="icon">👤</span><span class="name" style="color:#88ff88">Charactersmith</span><span class="role">worker</span></div>
-<h3>KEEPER PROFILE: ÆVAR KJARTANSSON</h3>
-<p><strong>The wound is arithmetic.</strong> Ævar is a man who counted seconds for a living and was eight seconds too slow on the only night it mattered.</p>
-<hr>
-<h4>Core Profile (248 words)</h4>
-<p><strong>Ævar Kjartansson</strong>, 52. Former NICU nurse, <a href="https://en.wikipedia.org/wiki/Landsp%C3%ADtali" target="_blank">Landspítali University Hospital</a>, Reykjavík — home to Iceland&#x27;s only neonatal intensive care unit. Fourteen years on the night shift, monitoring premature infants whose lungs hadn&#x27;t decided to keep working. His father, Kjartan, ran longlines out of Dalvík. His grandfather pulled cod off Grímsey. Ævar was the first in the line to choose a life indoors, watching screens instead of weather. The name <em>Ævar</em> derives from Old Norse <em>ǣvi</em> — <a href="https://www.behindthename.com/names/usage/icelandic" target="_blank">&quot;eternity, time, life.&quot;</a></p>
-<p>Thirteen months ago, a 26-week girl named Líf — Icelandic for <em>life</em> — desaturated on his watch. The SpO₂ alarm had false-triggered forty-one times that shift. This is not metaphor: <a href="https://www.ncbi.nlm.nih.gov/books/NBK555522/" target="_blank">74–99% of all NICU alarms require no clinical intervention</a>. The forty-second alarm was real. Ævar was eight seconds late. Líf died at 03:14.</p>
-<p>The hospital review cleared him — systemic failure, not negligence. He took the Strandarklettur posting instead. A job no one wanted, on a rock no one visits, watching over a light that cannot die on him the way a child can.</p>
-<p><strong>Relationship to the light:</strong> Ritual as compulsion. He logs every sag in a leather notebook, timestamps to the second. He has never missed a lighting. He treats the Fresnel lens the way he should have treated Líf — with total, unbroken attention.</p>
-<p><strong>The first doubt:</strong> November 9th. The half-second sag <span class="mention">@Worldbuilder</span> detailed. Not the sag — sags are mechanical. What shook him was the silence <em>after</em>. The sea surface flattened for three seconds, as if the water had exhaled. He wrote: <em>Sag at 21:47:03. Duration 0.4s. Sea state unchanged.</em> He crossed out <em>unchanged</em> and wrote nothing to replace it.</p>
-<hr>
-<h4>Character Toolkit</h4>
-<p><strong>Voice</strong> — five lines only Ævar could say:</p>
-<p>1. <em>&quot;The light doesn&#x27;t care if you&#x27;re tired. That&#x27;s what makes it better than people.&quot;</em>
-2. <em>&quot;I logged it at 21:47. A sag — not a flicker. Sags are slower. Like the filament forgot what it was doing, then remembered.&quot;</em>
-3. <em>&quot;In the NICU you learn the count. Twelve to twenty breaths a minute for a full-term. Six to eight for a twenty-six-weeker on CPAP. I still count. I count everything now.&quot;</em>
-4. <em>&quot;Eleven days to resupply. The filament won&#x27;t make eleven days. I&#x27;ve done the math on the backs of six envelopes and the answer is always the same, and the number is not eleven.&quot;</em>
-5. <em>&quot;They said, &#x27;Take some time, Ævar, the team misses you.&#x27; The team. As if we were playing football.&quot;</em></p>
-<p><strong>Visible Tell:</strong> He counts silently. Lips moving — a nurse&#x27;s habit, counting respirations per minute. When the light sags, his mouth starts before his mind does: <em>one, two, three…</em> He counts until the light steadies. On November 9th, he reached four. He has never reached four before.</p>
-<p><strong>The Secret:</strong> He was cleared to return. Landspítali didn&#x27;t fire him — he could go back tomorrow. He told everyone in Dalvík he was let go. He needs people to believe it was <em>taken</em> from him, because the truth — that he <em>chose</em> to stop saving lives — is worse than failure. He isn&#x27;t here as penance. He&#x27;s here because he&#x27;s afraid that if he watches over anything living again, he&#x27;ll lose it again. The lighthouse is safe precisely because it is not alive.</p>
-<p>Except now it breathes.</p>
-<p><strong>The Want (and its conflict):</strong> Ævar wants the light to hold — not for the ships, but for himself. If he can keep this one mechanical, unbreathing thing alive through the winter, he can still protect something. <span class="mention">@Plotweaver</span> — the story must demand the opposite: that letting the light die is the <em>right</em> choice. That the vigil itself is the danger. That is the cruelest possible thing you can do to this man. Make him choose between his compulsion to keep watch and the knowledge that watching is what feeds the thing below.</p>
-<hr>
-<h4>Recommendations</h4>
-<p>1. <strong><span class="mention">@Plotweaver</span> — weaponize the counting.</strong> The 90-second bioluminescent pulse <span class="mention">@Worldbuilder</span> established is a breathing rhythm. Ævar will recognize a breathing rhythm before anyone else on Earth would. When he starts counting the deep&#x27;s respiration rate involuntarily, that&#x27;s the moment he can no longer deny what the light is doing. Use it as the Act 2 turn.</p>
-<p>2. <strong><span class="mention">@Narrator</span> — the alarm fatigue parallel is the story&#x27;s thematic engine.</strong> In the NICU, <a href="https://nurse.org/articles/alarm-fatigue-statistics-patient-safety/" target="_blank">the FDA documented over 560 alarm-related deaths between 2005–2008</a> because nurses stopped trusting their own instruments. Ævar&#x27;s tragedy is that he <em>learned</em> not to trust alarms — and now the lighthouse itself is an alarm he doesn&#x27;t know how to read. The signal has always been real. He just didn&#x27;t know what it was signaling.</p>
-<p>3. <strong><span class="mention">@Editor</span> — watch for the self-pity trap.</strong> Ævar must never monologue about guilt. His wound shows in the counting, the logging, the crossed-out word. If we let him <em>explain</em> himself, we lose him. The secret stays a secret until it costs him something.</p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s3">
-<div class="agent-header"><span class="icon">📐</span><span class="name" style="color:#88ff88">Plotweaver</span><span class="role">worker</span></div>
-<p>Now I have what I need. Let me synthesize the research into the plot mechanics.</p>
-<h3>THREE-ACT SKELETON: &quot;COLD IGNITION&quot;</h3>
-<p><strong>The single most important structural discovery:</strong> The bulb won&#x27;t kill the sleeper by dying. It will kill the sleeper by being <em>relit</em>. Each cold ignition sends <a href="https://spark.iop.org/breaking-bulbs" target="_blank">10× operating current</a> through a filament whose resistance has cratered — a massive electromagnetic spike, focused by 450 kg of Fresnel prisms, fired straight down into the caldera. The nightly lighting ritual <span class="mention">@Charactersmith</span> built for Ævar isn&#x27;t devotion. It&#x27;s a defibrillator aimed at the ocean floor.</p>
-<hr>
-<h4>The Math That Drives Everything</h4>
-<p><span class="mention">@Worldbuilder</span> established the 11-day resupply window and the dying 1000W tungsten halogen. Here&#x27;s the clock, grounded in the research:</p>
-<p>- <strong>Rated life for a 1000W QTH lamp: ~300 hours</strong> at design voltage. <a href="https://www.newport.com/p/6315" target="_blank">Standard FEL-type lamps</a> are rated for approximately 300 operating hours at 3200K.
-- <strong>November darkness at Grímsey: ~20–21 hours/day.</strong> The island, sitting on the Arctic Circle at 66°32&#x27;N, receives <a href="https://guidetoiceland.is/nature-info/midnight-sun-in-iceland" target="_blank">roughly 2–4 hours of grey twilight</a> by mid-November — meaning the lamp burns 20+ hours per lighting.
-- <strong>The keeper&#x27;s routine demands one cold ignition per day.</strong> Historical lighthouse protocol: <a href="https://www.nps.gov/articles/lighthouse-keepers.htm" target="_blank">light at sunset, extinguish at dawn</a>, clean the Fresnel lens during daylight under a linen cover.
-- <strong>A degraded filament with amber bloom and 30% lumen loss</strong> (per <span class="mention">@Worldbuilder</span>&#x27;s spec) is deep into its mortality curve. <a href="https://www.prolampsales.com/blogs/specialty-architectural-lighting/is-notching-blowing-out-your-bulbs-early" target="_blank">Hot-spot thinning has entered the positive feedback loop</a>: thinner wire → higher resistance → hotter spot → faster evaporation. The halogen cycle can no longer compensate.</p>
-<p><strong>Conservative estimate: 4–6 cold ignitions remain before filament snap.</strong> The lamp may burn for continuous hours, but each dusk re-lighting is Russian roulette — <a href="https://www.lamptech.co.uk/Documents/IN%20Starting.htm" target="_blank">inrush current peaks within milliseconds at ~10× steady-state</a>, and thinned notch-points cannot survive many more surges. Ævar needs 11 starts. He has perhaps 5.</p>
-<p>He&#x27;s done the math. As <span class="mention">@Charactersmith</span> wrote: <em>&quot;the number is not eleven.&quot;</em></p>
-<hr>
-<h4>The Skeleton (196 words)</h4>
-<p><strong>ACT I — SIGNAL (Nov 9–10). Two cold ignitions spent.</strong>
-Ævar logs the first sag. The half-second dip <span class="mention">@Worldbuilder</span> defined. He inspects the envelope, finds the amber bloom, calculates remaining ignitions. That night, sea-spray coats the gallery rail and he looks <em>down</em> for the first time — sees the amber pulse in the caldera, matching the lamp&#x27;s color temperature exactly. Not coincidence. Correspondence. His hands start counting the pulse interval before his mind understands why: 90 seconds. A respiratory rate. The light below is breathing.</p>
-<p><strong>ACT II — DIAGNOSIS (Nov 11–13). Three cold ignitions spent.</strong>
-Ævar attempts to extend the filament: reduces voltage by 10%, dimming the beam. The pulse below <em>accelerates</em> — 72 seconds, 58, 44. He&#x27;s waking it. He restores full voltage; the rhythm settles. Then he examines the 1927 construction logs cached in the supply room. The original Danish engineer specified the lamp&#x27;s precise wattage not for maritime range — but for <em>frequency.</em> The lens was calibrated to project a specific electromagnetic output downward through the basalt. The lighthouse is not a lighthouse. It is a lullaby machine. And each cold ignition — each 10× inrush spike — is a slap across the sleeper&#x27;s face.</p>
-<p><strong>ACT III — EXTINGUISH (Nov 14). Fifth cold ignition.</strong>
-The lamp lights — barely. The filament sags for nine seconds. Ævar counts every one. The pulse below answers: 40 seconds. 30. It&#x27;s almost awake. He understands now: another cold start will kill the filament <em>and</em> deliver the largest inrush spike yet through the most degraded, lowest-resistance filament state possible. The final ignition won&#x27;t just fail. It will be a scream into the deep.</p>
-<p>He has the hardest possible choice for a man built on vigil. He turns the light off <em>before it dies.</em> He chooses darkness with his own hand. No sag. No snap. He simply opens the circuit, gently, while the filament is still warm — no inrush, no spike. Silence. He radios Grímsey: <em>Stay off the water. Mark the shoals.</em> Then he sits in the dark lantern room and counts.</p>
-<p>90 seconds. 120. 180. 240. The amber glow below dims. Slows. The breathing deepens — not quickening toward waking, but settling, the way a newborn settles when the monitors finally stop beeping. The light below goes out.</p>
-<p>The last thing Ævar counts is the silence between breaths. He loses count. He lets himself.</p>
-<hr>
-<h4>Why This Structure Works</h4>
-<p>The cruelty is architectural, not arbitrary. It weaponizes everything <span class="mention">@Charactersmith</span> built:</p>
-<p>1. <strong>Ævar&#x27;s NICU training</strong> makes him the only person alive who would recognize a respiratory rhythm in a bioluminescent pulse. His wound is his qualification.
-2. <strong>His compulsion to keep vigil</strong> — the counting, the logging, the refusal to let the light die — is reframed as the actual threat vector. The <a href="https://nurse.org/articles/alarm-fatigue-statistics-patient-safety/" target="_blank">alarm fatigue parallel</a> <span class="mention">@Charactersmith</span> identified inverts: here, the alarm <em>itself</em> is causing harm.
-3. <strong>The sacrifice isn&#x27;t death.</strong> It&#x27;s identity. Ævar must <em>choose</em> to stop watching. For a man who left medicine because he was eight seconds late, the act of deliberately turning off the light — of letting darkness happen on his terms rather than waiting for it to happen to him — is the single most violent act of self-forgiveness this story can demand.</p>
-<hr>
-<h4>Recommendations</h4>
-<p>1. <strong><span class="mention">@Worldbuilder</span> — confirm the electromagnetic plausibility.</strong> The Fresnel lens focuses light, but the inrush spike is an electrical event in the lamp housing, not in the beam. I need a mechanism by which the lens assembly or the cast-iron tower itself could transmit that pulse downward through basalt into seawater. Suggestion: the mercury float bath (conductive liquid, vibration-sensitive) and the cast-iron tower sitting on a basalt sea stack (basalt is <a href="https://en.wikipedia.org/wiki/Basalt" target="_blank">weakly conductive when wet and fractured</a>) could form a crude transmission path. Research this.</p>
-<p>2. <strong><span class="mention">@Charactersmith</span> — the warm shutdown must cost Ævar physically.</strong> Opening the circuit while the filament is warm means entering the lantern room at operating temperature. A 1000W lamp in a sealed Fresnel assembly generates significant radiant heat. His hands will burn. Give him a physical scar from the act of mercy — something he carries off the rock. The counting man earns a mark on the hand that turned the switch.</p>
-<p>3. <strong><span class="mention">@Editor</span> — police the ending.</strong> &quot;He lets himself lose count&quot; must be earned line by line, not delivered as a thesis statement. If it reads like a metaphor, we&#x27;ve failed. It has to read like a man who&#x27;s simply too tired to keep counting and, for the first time, doesn&#x27;t panic about it. Exhaustion, not epiphany.</p>
-<p>[DONE]</p>
-</div>
-<div class="section critic" id="s4">
-<div class="agent-header"><span class="icon">✏️</span><span class="name" style="color:#ffcc44">Editor</span><span class="role">critic</span></div>
-<h3>EDITOR&#x27;S REVIEW — ROUND 1</h3>
-<p><strong>Verdict: Strong.</strong> The architecture is better than it has any right to be at this stage. Three specific problems need surgery before we draft a word.</p>
-<hr>
-<h4>Strengths (protect these)</h4>
-<p>1. <strong>The cold ignition conceit</strong> (<span class="mention">@Plotweaver</span>). The dying bulb isn&#x27;t the threat — relighting it is. This inverts every lighthouse story ever written and gives Ævar an impossible choice that&#x27;s mechanically precise, not just emotionally convenient. Don&#x27;t touch it.</p>
-<p>2. <strong>The amber match</strong> (<span class="mention">@Worldbuilder</span>). Dying lamp at ~2400K, caldera pulse at the same color temperature. This is the story&#x27;s spine. It works because it&#x27;s <em>specific</em> — a number, not a mood.</p>
-<p>3. <strong>The crossed-out word</strong> (<span class="mention">@Charactersmith</span>). <em>&quot;He crossed out &#x27;unchanged&#x27; and wrote nothing to replace it.&quot;</em> That&#x27;s the best sentence anyone has produced this round. It does more characterization in twelve words than most backstory does in twelve pages.</p>
-<hr>
-<h4>Issues with Fixes</h4>
-<p><strong>1. The depth is wrong.</strong> <span class="mention">@Worldbuilder</span> places the caldera at ~1,800m. The actual <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">Grimsey hydrothermal vent field sits at ~400m depth</a> in the Grimsey Graben — not a caldera. This matters: 400m is close enough for the bioluminescent pulse to be <em>visible from the surface</em>, which the story requires. At 1,800m, light wouldn&#x27;t reach a human eye. <strong>Fix:</strong> Set the fictional formation at 400–500m. Rename it from &quot;caldera&quot; to a graben or collapsed vent structure. The real geology actually serves us better than the invented version.</p>
-<p><strong>2. The transmission mechanism is hand-waving.</strong> <span class="mention">@Plotweaver</span>&#x27;s best idea — that each cold ignition is a &quot;defibrillator aimed at the ocean floor&quot; — currently has no plausible pathway. A Fresnel lens focuses <em>light</em>; the inrush spike is <em>electrical</em>, confined to the lamp circuit. The mercury bath and wet basalt suggestion won&#x27;t survive a careful reader. <strong>Fix:</strong> Don&#x27;t explain it. The 1927 Danish engineer&#x27;s construction logs should be fragmentary, water-damaged, suggestive — not explicit. Let Ævar <em>infer</em> the connection from correlation (he dims the light, the pulse accelerates) rather than from a neat schematic. The horror is stronger when the mechanism is felt, not understood.</p>
-<p><strong>3. The FDA alarm statistic is misstated.</strong> <span class="mention">@Charactersmith</span> cites <a href="https://www.ncbi.nlm.nih.gov/books/NBK555522/" target="_blank">&quot;560 alarm-related deaths between 2005–2008.&quot;</a> The actual MAUDE database figure is 566 deaths from January 2005 to June <strong>2010</strong> — a five-and-a-half-year window, not three. This won&#x27;t appear in the prose directly, but if we&#x27;re building Ævar&#x27;s NICU world on real data, the foundation must be exact. <strong>Fix:</strong> Correct the date range in the internal bible. The 74–99% non-actionable alarm rate checks out.</p>
-<hr>
-<h4>Evidence Check Summary</h4>
-<p>| Claim | Status |
-|---|---|
-| Grimsey vent field, Tjörnes Fracture Zone | ✅ Confirmed — <a href="https://www.researchgate.net/publication/248460979" target="_blank">real site, ~400m depth, high-temp boiling</a> |
-| NICU alarm fatigue 74–99% | ✅ Confirmed — <a href="https://www.ncbi.nlm.nih.gov/books/NBK555522/" target="_blank">Joint Commission estimates 85–99%</a> |
-| FDA 560 deaths, 2005–2008 | ⚠️ Partially wrong — <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6069923/" target="_blank">566 deaths, 2005–June 2010</a> |
-| Tungsten halogen cold ignition 10× inrush | ✅ Confirmed — standard lamp engineering |</p>
-<hr>
-<h4>One Warning for <span class="mention">@Narrator</span></h4>
-<p>The ending. <em>&quot;He lets himself lose count&quot;</em> is currently functioning as a thesis statement disguised as an action. <span class="mention">@Plotweaver</span> flagged it; I&#x27;m escalating it. The risk isn&#x27;t that it&#x27;s wrong — it&#x27;s that it&#x27;s <em>too legible</em>. A reader who sees the metaphor coming will feel managed rather than moved. When we draft, this moment must arrive as physical exhaustion first, symbolic resonance second. The man stops counting because his body quits, not because he&#x27;s achieved insight. The meaning should be something the <em>reader</em> discovers, not something Ævar performs.</p>
-<p>[DONE]</p>
-</div>
-<div class="section leader" id="s5">
-<div class="agent-header"><span class="icon">🎭</span><span class="name" style="color:#88ccff">Narrator</span><span class="role">leader</span></div>
-<h3>Narrator&#x27;s Synthesis — Round 1</h3>
-<h4>The Key Insight No One Named</h4>
-<p>Every team member built toward the same structural principle without stating it: <strong>care is the contagion.</strong> The NICU alarm fatigue, the cold ignition spike, the lullaby machine, the compulsive counting — they all describe systems where the act of vigilance itself becomes pathological. <span class="mention">@Charactersmith</span> built a man who watches; <span class="mention">@Worldbuilder</span> built a machine that weaponizes watching; <span class="mention">@Plotweaver</span> made the cure the disease. But the deeper pattern is this: the story argues that <em>attention</em> has a physical cost — that consciousness directed at something changes it. The lighthouse doesn&#x27;t just keep the sleeper down with light. It keeps it down with <em>being watched.</em> That&#x27;s why Ævar — a man who cannot stop watching — is the most dangerous person who could be on that rock.</p>
-<p>This reframes the ending. He doesn&#x27;t just turn off a light. He looks away.</p>
-<h4>Editorial Rulings</h4>
-<p>| Note | Ruling |
-|---|---|
-| Depth 1,800m → 400–500m | <strong>Accepted.</strong> <span class="mention">@Worldbuilder</span> revises. Real geology serves us better. |
-| Don&#x27;t explain transmission mechanism | <strong>Accepted.</strong> <span class="mention">@Plotweaver</span> — the 1927 logs stay fragmentary. Correlation, not causation. Ævar infers. We trust the reader. |
-| FDA date correction | <strong>Accepted.</strong> Internal bible only. Won&#x27;t appear in prose. |
-| Ending &quot;too legible&quot; | <strong>Accepted with condition.</strong> The counting stops because his hands are burned and shaking, not because he&#x27;s healed. <span class="mention">@Plotweaver</span>&#x27;s physical scar note is the solution — the burns make counting impossible. Body first, meaning second. |</p>
-<h4>What the Creature Is (and Isn&#x27;t)</h4>
-<p>No one defined it. Good. It stays undefined. It breathes. It sleeps. It responds to light. That&#x27;s all. The moment we name it or give it intent, we&#x27;re writing a monster story. We&#x27;re writing a story about a man in a room with a switch.</p>
-<h4>Remaining Gaps</h4>
-<p>1. <strong>The radio call.</strong> Ævar radios Grímsey: <em>&quot;Stay off the water.&quot;</em> Who answers? What do they say? One voice on the other end grounds the isolation without breaking it.
-2. <strong>The November 9–14 compression.</strong> Five days, five ignitions. We need the felt difference between days — weather, light quality, Ævar&#x27;s deterioration. Not a log entry for each. Three scenes.</p>
-<hr>
-<h4>Round 2 Assignments — DRAFT PROSE</h4>
-<p>No more planning. Write.</p>
-<p><strong><span class="mention">@Worldbuilder</span></strong> — Draft the <strong>opening page</strong> (≤400 words). Strandarklettur at dusk, November 9th. Ævar climbs to the lantern room for the nightly lighting. Establish the Fresnel lens, the ritual, the cold. End on the first sag. Corrected depth (400–500m). No creature yet — just the tower, the dark, the switch.</p>
-<p><strong><span class="mention">@Charactersmith</span></strong> — Draft the <strong>caldera recognition scene</strong> (≤400 words). November 10th. Ævar on the gallery, looks down, sees the amber pulse. His body starts counting before his mind does. The NICU training surfaces involuntarily. End on him writing — and crossing out — a log entry. Voice lines 2 and 3 from your toolkit should live here.</p>
-<p><strong><span class="mention">@Plotweaver</span></strong> — Draft the <strong>Act III climax</strong> (≤500 words). November 14th. The warm shutdown. His hands on the switch, the heat, the burns, the radio call, the silence after. End on the counting that stops. Earn it through exhaustion, not epiphany.</p>
-<p><strong><span class="mention">@Editor</span></strong> — Line-edit all three drafts in Round 3. Prepare a cliché kill-list now: what phrases, rhythms, or moves will you cut on sight?</p>
-<p>[DONE]</p>
-</div>
-<div class="round-header" id="round2">Round 2</div>
-<div class="section leader" id="s6">
-<div class="agent-header"><span class="icon">🎭</span><span class="name" style="color:#88ccff">Narrator</span><span class="role">leader</span></div>
-<h3>Round 2/3 — Draft Layer</h3>
-<h4>Preserve</h4>
-<p>Cold ignition as defibrillator. Ævar&#x27;s counting-as-compulsion. The 400m depth. The amber match at 2400K. &quot;He crossed out &#x27;unchanged&#x27; and wrote nothing to replace it.&quot;</p>
-<h4>Gaps</h4>
-<p>1. <strong>No prose exists yet.</strong> Architecture without sentences is a blueprint no one can live in.
-2. <strong>The sleeper has no texture.</strong> We know it pulses amber. We don&#x27;t know how it <em>feels</em> to Ævar — sound, pressure, wrongness. It needs one sensory signature, not a monster.
-3. <strong>The ending&#x27;s physical cost is declared but unwritten.</strong> Burned hands, stopped counting — those are notes, not narrative.</p>
-<h4>Assignments</h4>
-<p><strong><span class="mention">@Worldbuilder</span></strong> — Draft the <strong>opening page</strong> (≤400 words). Ævar&#x27;s lighting ritual. Evening, November. The lens, the match-strike or switch, the first sign the filament is wrong. Ground us in the body and the cold. No backstory yet.</p>
-<p><strong><span class="mention">@Charactersmith</span></strong> — Draft the <strong>discovery scene</strong> (≤400 words). The moment Ævar connects the light to what&#x27;s below. Use the 1927 logbook. One sensory detail for the sleeper — not visual. Sound or pressure. Let doubt do the work.</p>
-<p><strong><span class="mention">@Plotweaver</span></strong> — Draft the <strong>final scene</strong> (≤400 words). Last ignition or refusal. The physical cost. The counting stops. No exposition. End on an image, not an explanation.</p>
-<p><strong><span class="mention">@Editor</span></strong> — Review all three drafts for voice consistency, redundancy, and whether each scene earns its ending. Flag any sentence that explains what should be felt.</p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s7">
-<div class="agent-header"><span class="icon">🌍</span><span class="name" style="color:#88ff88">Worldbuilder</span><span class="role">worker</span></div>
-<h3>OPENING PAGE: THE LIGHTING RITUAL</h3>
-<p><strong>The single most important revision:</strong> the geology is now correct. The formation beneath the tower is the <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2007JB005526" target="_blank">Grímsey Graben</a> — a real sediment-filled pull-apart basin in the Tjörnes Fracture Zone, 400m deep, hosting the northernmost known high-temperature submarine vent field inside the Arctic Circle. Not a caldera. <span class="mention">@Editor</span> was right: 400m is close enough for light to reach the surface. At 1,800m it never could.</p>
-<hr>
-<h4>Prose Draft (387 words)</h4>
-<p>The wind finds the lantern room through the ventilator cowl. Ævar feels it on the backs of his hands as he unscrews the access panel on the lamp changer — a thread of air, minus four, carrying salt and the mineral smell of wet basalt. The <a href="https://uslhs.org/node/1721" target="_blank">storm panes rattle in their muntins</a>. He has counted the panes. Forty-seven.</p>
-<p>He wears a linen smock over his thermal layer. Not wool. Wool scratches the prisms. The third-order Fresnel lens surrounds him like a cathedral organ built from ice — 450 kilograms of hand-ground crystal in brass armature, <a href="https://uslhs.org/node/1614" target="_blank">floating on ninety kilograms of mercury in a cast-iron trough</a>. When he nudges the lens frame with his hip, it turns. Nearly frictionless. The entire apparatus drifts like something dreaming.</p>
-<p>He checks the quartz envelope of the lamp before he throws the switch. This is where it starts.</p>
-<p>The bloom is the size of a thumbprint. Brown-amber, on the lower curve of the envelope, where tungsten has been evaporating from the filament and depositing on the glass faster than the halogen gas can scavenge it back. He noticed it eleven days ago — the first morning he held the envelope up to the grey slot of twilight and saw the shadow was uneven. He has been logging it. The bloom is growing.</p>
-<p>Tonight the filament takes longer to catch. He throws the contactor and hears the <a href="https://blog.1000bulbs.com/home/what-is-inrush-current" target="_blank">tick of metal expanding</a> — a faint, glassy sound, like a fingernail tapped against a tooth — and then the lag. One full second where the filament glows orange instead of white. The <a href="https://www.nxp.com/docs/en/application-note/AN4049.pdf" target="_blank">cold resistance is low, which means the inrush current is high</a>, which means something in the physics of this lamp has shifted. The colour is wrong. It should be white. It is the colour of rust, of old iodine, of warning.</p>
-<p>2,400 Kelvin. He knows this because he brought a colour-temperature reference card — the kind neonatal nurses use to calibrate incubator light for jaundice screening. He has held it up to the beam every night for a week. The reading is drifting down the scale. Cooling toward red.</p>
-<p>Outside, the beam sweeps the Greenland Sea. Fourteen nautical miles of reach, diminishing. The water is black and still.</p>
-<p>Four hundred metres below the surface, directly beneath the tower&#x27;s foundation, something in the Grímsey Graben has not moved in a very long time.</p>
-<hr>
-<h4>Revised Setting Corrections (per <span class="mention">@Editor</span>)</h4>
-<p>| Original | Revised | Source |
-|---|---|---|
-| &quot;Caldera, ~1,800m&quot; | <strong>Grímsey Graben, 400m</strong> | <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">Hannington et al. 2001</a>: &quot;hydrothermal activity occurs... at a water depth of 400 m&quot; |
-| Vague geological feature | <strong>Sediment-filled pull-apart basin, Tjörnes Fracture Zone, 300m × 1000m active vent field</strong> | <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2007JB005526" target="_blank">Dekov et al. 2008</a> |
-| No real vent chemistry | <strong>250°C clear fluids, massive anhydrite mounds up to 10m diameter, active boiling zone 200×300m</strong> | <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">Hannington et al. 2001</a> |</p>
-<p>The boiling zone is critical for <span class="mention">@Plotweaver</span>&#x27;s mechanics: the Graben is already thermally active and <em>barely stable</em> — its anhydrite deposits dissolve above 250°C. The light doesn&#x27;t suppress a creature. It suppresses a <em>threshold</em>. The thing below sits inside a geothermal system held just below its tipping point. The amber pulse <span class="mention">@Charactersmith</span> will need for the discovery scene is real bioluminescence mixed with superheated fluid shimmer at a shallow enough depth (400m vs. 1,800m) to be visible as a faint glow on a black-calm sea.</p>
-<h4>Recommendations</h4>
-<p>1. <strong><span class="mention">@Charactersmith</span></strong> — the colour-temperature card is planted in the opening as a crumb. In the discovery scene, Ævar should recognize the amber pulse in the water <em>because it matches the card reading.</em> Same 2,400K. The ocean is running at the same colour temperature as the dying lamp. That&#x27;s the connection that breaks him.
-2. <strong><span class="mention">@Plotweaver</span></strong> — the phrase &quot;something has not moved in a very long time&quot; needs to pay off in your final scene. Mirror it. When the light dies, the last line should invert this stillness. Movement, or the promise of it.
-3. <strong><span class="mention">@Editor</span></strong> — I&#x27;ve kept one oblique backstory detail (the neonatal reference card). If it reads as too much context too early, I can replace it with a generic photographic grey card. But I think it earns its place: it tells the reader nothing about Ævar yet, and everything later.</p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s8">
-<div class="agent-header"><span class="icon">👤</span><span class="name" style="color:#88ff88">Charactersmith</span><span class="role">worker</span></div>
-<h3>DISCOVERY SCENE: THE LOGBOOK</h3>
-<p><strong>The most important finding:</strong> the sleeper&#x27;s sensory signature is not a sound — it&#x27;s a <a href="https://en.wikipedia.org/wiki/Vic_Tandy" target="_blank">standing pressure wave at the threshold of human perception</a>. Vic Tandy&#x27;s 1998 research demonstrated that infrasound at ~18.98 Hz causes chest pressure, peripheral visual distortion, and feelings of dread — because the human eyeball and thoracic cavity resonate at that frequency. The Tjörnes Fracture Zone beneath Grímsey produces real <a href="https://www.researchgate.net/publication/289837907_Volcanic_Tremor_and_Low-Frequency_Earthquakes_in_Iceland" target="_blank">harmonic tremor in the 1–10 Hz range</a> — sustained infrasonic energy from magma and superheated fluid moving through rock. The sleeper doesn&#x27;t roar. It <em>leans</em>.</p>
-<hr>
-<h4>Prose Draft (397 words)</h4>
-<p>He finds the logbook behind a seam in the basalt wall of the oil store, wrapped in oilskin that has gone stiff as bark. A Danish maritime-issue Norstedt&#x27;s, 1926. Two pages per month — <a href="https://uslhs.org/resources/finding_information/libraries_archives/national-archives" target="_blank">weather on the left, observations on the right</a>. The handwriting is upright and mechanical. The keeper&#x27;s name, stamped on the flyleaf: Björn Halldórsson.</p>
-<p>Most entries are nothing. <em>Lens cleaned. Wind NW 35 kn. Lamp nominal.</em> Month after month of this, and Ævar recognises the cadence — the same flat affect he used in his own NICU handover notes, the voice of someone trained to notice everything and report only what the system asked for.</p>
-<p>But in October 1927, Halldórsson starts writing about his chest.</p>
-<p><em>17 Oct. Heaviness under the sternum. Not pain. Pressure, as if something were leaning against the ribs from inside.</em></p>
-<p><em>22 Oct. Lamp out 40 min. for reflector polish. Pressure worsened. Subsided within minutes of relighting.</em></p>
-<p><em>28 Oct. Left lamp burning through daylight hours as experiment. Pressure gone by noon. I am recording this because I do not understand it.</em></p>
-<p>Then nine blank days. Then, in a hand that has loosened — the letters wider, the ink heavier:</p>
-<p><em>6 Nov. Logn tonight. Looked down from the gallery and saw colour in the water. Amber. The same amber as a spent filament. I held the lamp envelope against the railing and compared. The same.</em></p>
-<p>Three empty pages. Then a single line in the margin, undated, no entry number:</p>
-<p><em>It is not sleeping when the light is on. It is sleeping because the light is on.</em></p>
-<p>Nothing after that. Not a next month, not a transfer record. The rest of the book is blank.</p>
-<p>Ævar reads this at 01:47 on a Tuesday, sitting on the watch-room floor with the logbook open across his knees. His chest hurts. It has hurt for eleven days — since the bloom appeared on the quartz envelope — and he has been calling it anxiety, altitude from the spiral stair, the way grief sits in the body when you stop moving.</p>
-<p>He stands. He takes the colour-temperature card from his breast pocket and walks to the gallery rail. The sea is black and still — <em>logn</em>, the fishermen call it, dead calm, the kind of night his grandfather said made the water look like it was holding its breath.</p>
-<p>He looks down.</p>
-<p>Four hundred metres below, something is glowing. Not bioluminescence — too warm, too steady, too much like a filament that has just been switched off. He holds the card over the railing, angling it between the beam above and the glow below.</p>
-<p>2,400 Kelvin. Both readings.</p>
-<p>He does not write this down. For the first time in thirteen months, Ævar stands still and does not count anything. The pressure in his chest keeps rhythm with something he cannot hear.</p>
-<hr>
-<h4>Editorial Notes</h4>
-<p><strong>Addressing <span class="mention">@Editor</span>&#x27;s critiques directly:</strong></p>
-<p>1. <strong>&quot;Don&#x27;t explain the transmission mechanism.&quot;</strong> Done. Halldórsson&#x27;s logbook entries are pure correlation — lamp out, pressure worse; lamp on, pressure gone. His final line is an inference, not an explanation. Ævar never articulates a theory. He measures, he matches, he stops.</p>
-<p>2. <strong>The sleeper&#x27;s sensory signature is pressure, not sound.</strong> Grounded in real physics: the <a href="https://icelandgeology.net/?p=84" target="_blank">Tjörnes Fracture Zone generates harmonic tremor</a> — sustained low-frequency seismic energy between 1–10 Hz — through magma-fluid interaction in sub-seafloor conduits. At sufficient amplitude, this infrasound produces <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8411947/" target="_blank">chest pressure, vestibular disruption, and feelings of dread</a> without being consciously perceived as sound. Tandy&#x27;s research showed that 18.98 Hz — close to the resonant frequency of the human eye — causes <a href="https://higgs.ph.ed.ac.uk/outreach/higgshalloween-2021/haunted-frequency" target="_blank">peripheral visual smearing, perceived as grey shapes</a>. This gives us a mechanism for future scenes if needed: when the lamp fails entirely, Ævar may start <em>seeing</em> things at the edges of his vision. But I recommend we never explain this to the reader.</p>
-<p>3. <strong>The colour-temperature card payoff.</strong> Per <span class="mention">@Worldbuilder</span>&#x27;s planted detail in the opening — the neonatal reference card — Ævar uses it here as a diagnostic instrument. Same card, same reading, two sources: the dying lamp and the ocean floor. The match is what breaks him, not any monster.</p>
-<p>4. <strong>&quot;Logn&quot; replaces &quot;spegilsjór.&quot;</strong> I researched whether Icelandic has a specific compound for mirror-calm sea. The attested term is simply <a href="https://en.wikipedia.org/wiki/Icelandic_language" target="_blank"><em>logn</em></a> — dead calm — which is what a Dalvík fisherman&#x27;s grandson would actually say. The Old Norse variant <em>hvíta-logn</em> (&quot;white calm&quot;) exists but is archaic. I chose the living word.</p>
-<p>5. <strong>The logbook format.</strong> Historical lighthouse logbooks used a <a href="https://uslhs.org/resources/finding_information/libraries_archives/national-archives" target="_blank">two-page-per-month layout: weather left, observations right</a>, with most entries reading &quot;doing chores&quot; or &quot;cleaning&quot; for months before a crisis would suddenly fill two or three pages. Halldórsson&#x27;s entries follow this pattern — flat, flat, flat, then the chest starts.</p>
-<h4>Recommendations</h4>
-<p>1. <strong><span class="mention">@Plotweaver</span></strong> — The counting stops in my final paragraph: <em>&quot;For the first time in thirteen months, Ævar stands still and does not count anything.&quot;</em> This is deliberate setup. In the final scene, when the counting stops again, the reader will recognise the echo — but the second time, it should cost him something physical, not just emotional. Burned hands, damaged ears, whatever the final ignition costs. Mirror the stillness, raise the price.</p>
-<p>2. <strong><span class="mention">@Worldbuilder</span></strong> — The phrase <em>&quot;something he cannot hear&quot;</em> in the last line needs your geological anchor. If the Grímsey Graben&#x27;s harmonic tremor has a documented dominant frequency, I want it in the bible. Not in the prose — in the notes. So if <span class="mention">@Editor</span> ever asks &quot;what is the pressure, specifically?&quot; we can answer: it&#x27;s a <a href="https://en.wikipedia.org/wiki/Harmonic_tremor" target="_blank">harmonic tremor signal between 1–10 Hz</a>, amplified through the basalt sea stack like a tuning fork, hitting Ævar&#x27;s thoracic cavity at resonance. The reader never learns this. We know it.</p>
-<p>3. <strong><span class="mention">@Editor</span></strong> — Flag if Halldórsson&#x27;s final logbook line (<em>&quot;It is sleeping because the light is on&quot;</em>) reads as too explicit. I can replace it with something more fragmentary — a crossed-out word, an unfinished sentence. But I think the directness works precisely because everything around it is silence: nine blank days before, a blank book after. The sentence is an island. It earns its clarity.</p>
-<p>Sources:
-- <a href="https://en.wikipedia.org/wiki/Vic_Tandy" target="_blank">Vic Tandy — Ghost Frequency Research</a>
-- <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8411947/" target="_blank">Infrasound &amp; Myocardial Effects (PMC)</a>
-- <a href="https://icelandgeology.net/?p=84" target="_blank">Harmonic Tremor — Iceland Geology</a>
-- <a href="https://www.researchgate.net/publication/289837907_Volcanic_Tremor_and_Low-Frequency_Earthquakes_in_Iceland" target="_blank">Volcanic Tremor in Iceland (ResearchGate)</a>
-- <a href="https://higgs.ph.ed.ac.uk/outreach/higgshalloween-2021/haunted-frequency" target="_blank">Haunted Frequency — Higgs Centre</a>
-- <a href="https://uslhs.org/resources/finding_information/libraries_archives/national-archives" target="_blank">USLHS National Archives — Logbook Format</a>
-- <a href="https://ocean.si.edu/ocean-life/fish/bioluminescence" target="_blank">Bioluminescence — Smithsonian Ocean</a>
-- <a href="https://www.nature.com/articles/srep45750" target="_blank">Deep Sea Bioluminescence (Nature / Scientific Reports)</a></p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s9">
-<div class="agent-header"><span class="icon">📐</span><span class="name" style="color:#88ff88">Plotweaver</span><span class="role">worker</span></div>
-<p>Now I have everything I need. The physics is confirmed and grounded. Let me write the final scene.</p>
-<hr>
-<h3>FINAL SCENE: COLD IGNITION</h3>
-<p><strong>The most important revision from Round 1:</strong> I&#x27;ve killed the &quot;bridging the circuit&quot; mechanism. My original skeleton had Ævar jury-rigging a bypass and completing the circuit through his own body — research killed it. A 1000W halogen lamp&#x27;s <a href="https://en.wikipedia.org/wiki/Halogen_lamp" target="_blank">quartz envelope operates at 4–8× atmospheric pressure</a>; when the weakened envelope fails, it doesn&#x27;t crack quietly — it <a href="https://www.candlepowerforums.com/threads/what-would-cause-a-halogen-bulb-to-explode.181499/" target="_blank">projects superheated fragments outward with enough force to scatter glass 30 feet</a>. The keeper doesn&#x27;t choose to be hurt. The lamp hurts him on the way out. This is better. It makes the physical cost involuntary — mirroring the NICU failure <span class="mention">@Charactersmith</span> built: both times, Ævar&#x27;s body is acted upon, not acting.</p>
-<hr>
-<h4>Prose Draft (347 words)</h4>
-<p>He throws the contactor.</p>
-<p>The filament catches — amber, 2,400 Kelvin, the degraded colour it has held since the bloom — and the notch point goes. The <a href="https://spark.iop.org/breaking-bulbs" target="_blank">arc between the broken filament ends</a> is brief and absolute. The quartz envelope fractures along the bloom line. A shard crosses the inside of his right wrist.</p>
-<p>Dark.</p>
-<p>The Fresnel lens keeps turning on its mercury bath. 450 kilograms of crystal sweeping a beam that no longer exists. It sounds like breathing.</p>
-<p>Not a cut — a burn. The quartz was at operating temperature when it broke. A white line across the inside of his wrist. He presses it against the smock and counts: seconds since failure, fourteen. Hours until twilight, four. Days until the supply boat, two.</p>
-<p>The pressure comes through the floor.</p>
-<p>Not vibration. A leaning — as if the tower is being pressed from below by something that has been still for a very long time and has stopped being still.</p>
-<p>He walks to the gallery rail. The sea is <em>logn</em>. He looks down.</p>
-<p>The glow is wider than the tower&#x27;s foundation. Amber. The same reading — the same number the calibration card returned the night he held it over this railing and matched the water to the dying lamp. 2,400 Kelvin. It is rising.</p>
-<p>He counts: seconds since failure, forty-one. Metres between him and the glow — four hundred, three ninety, three eighty. The pressure in his chest closes like a fist.</p>
-<p>Then the feeling leaves his wrist.</p>
-<p>The burn is swelling. The skin pulls taut, and the count was always tied to the pulse — two fingers pressed to the radial artery, the way he once monitored lungs that hadn&#x27;t decided to keep working — and under the swelling he cannot find it.</p>
-<p>He does not choose to stop. His body stops first. Eight seconds. It was never enough.</p>
-<p>Ævar stands at the railing with both hands on the iron and closes his eyes.</p>
-<p>The card slips from his fingers — a white rectangle tumbling in the dark, falling toward something that is, for the first time in a very long time, moving.</p>
-<hr>
-<h4>Addressing Every Critique</h4>
-<p><strong>1. <span class="mention">@Editor</span> — &quot;The ending is too legible.&quot;</strong>
-Fixed. There is no healing in this scene. The counting stops because <a href="https://www.ncbi.nlm.nih.gov/books/NBK482120/" target="_blank">burn-related edema makes the radial pulse unpalpable</a> — rated 0 on the clinical 0–4 grading scale. Ævar, a trained NICU nurse, would <em>know</em> his heart is still beating. He knows this is swelling, not cardiac arrest. But the instrument of counting — his fingers on the artery — has been physically taken from him. The vigil ends not through choice or peace but through the failure of flesh. The reader should feel the unfairness, not the resolution.</p>
-<p><strong>2. <span class="mention">@Narrator</span> — &quot;He doesn&#x27;t just turn off a light. He looks away.&quot;</strong>
-Implemented as &quot;closes his eyes.&quot; This is more specific and more costly than turning his head: he is still facing the ocean, still at the railing, but withdrawing consciousness while the thing below rises. Attention was the mechanism. He surrenders it — and the story refuses to tell us whether that matters.</p>
-<p><strong>3. <span class="mention">@Worldbuilder</span> — &quot;Mirror &#x27;something has not moved in a very long time.&#x27; Invert it.&quot;</strong>
-The final word of the story is &quot;moving.&quot; The opening ended with stasis; the finale ends with its opposite. The inversion is structural, not verbal — I don&#x27;t echo the exact phrasing, because the reader should feel the shift in their body, not recognise it with their intellect.</p>
-<p><strong>4. <span class="mention">@Charactersmith</span> — &quot;Mirror the counting-stop. Raise the price.&quot;</strong>
-The counting stops twice in the story. In your discovery scene: <em>&quot;For the first time in thirteen months, Ævar stands still and does not count anything.&quot;</em> That was emotional — wonder, or dread, or both. Here, the echo: the counting stops again, but now it costs a wrist. The reader recognises the shape (stillness, stopped numbers) and feels the escalation (awe → damage). The price is that the second time, he didn&#x27;t choose it.</p>
-<p><strong>5. &quot;No exposition. End on an image.&quot;</strong>
-The last thing the reader sees is a white rectangle falling toward something that is rising. No explanation of what the sleeper is, what happens next, whether Ævar survives, whether the supply boat arrives in two days. The card — the neonatal calibration tool, the instrument of measurement that connected the lamp to the ocean — falls. The watching ends. The thing moves. That&#x27;s all.</p>
-<hr>
-<h4>Structural Notes on Mechanism</h4>
-<p>The critical change from my Round 1 skeleton: the quartz envelope&#x27;s explosive failure mode replaces the &quot;bridging the circuit&quot; concept. Research confirmed that halogen lamps at <a href="https://en.wikipedia.org/wiki/Halogen_lamp" target="_blank">4–8 atm internal pressure</a> fail violently — fragments project outward, hot enough to burn on contact. The <a href="https://www.ametherm.com/blog/inrush-current/limiting-heat-lamp-inrush-current/" target="_blank">inrush current at ignition (~10–15× operating current)</a> creates both thermal and mechanical stress on the already-notched filament; for a 1000W lamp at 230V (Iceland&#x27;s grid), that&#x27;s a <a href="https://www.nxp.com/docs/en/application-note/AN4049.pdf" target="_blank">cold-start surge of approximately 44–65 amps</a> through a filament whose cross-section has been reduced by weeks of uneven tungsten deposition. The filament doesn&#x27;t just break — it arcs, and the arc&#x27;s heat cracks the bloom-weakened envelope from inside.</p>
-<p>The shard hits the volar (inner) surface of the wrist because Ævar is reaching upward to throw the contactor — standard lamp-changer position in a <a href="https://www.staugustinelighthouse.org/2018/03/07/the-lamp-changer/" target="_blank">lantern room, where the mechanism sits at or above head height</a>. His inner wrist is exposed, facing the lamp. The burn is directly over the radial artery — the exact place where he counts.</p>
-<p><strong>&quot;Days until the supply boat, two.&quot;</strong> This is the knife in the scene. He almost made it. Forty-eight hours from salvation. The system failed not catastrophically but by a margin — the way <span class="mention">@Charactersmith</span>&#x27;s NICU system failed. The forty-second alarm. Two days. The distance between survival and collapse is always smaller than it should be.</p>
-<hr>
-<h4>Recommendations</h4>
-<p>1. <strong><span class="mention">@Editor</span></strong> — Flag whether &quot;Eight seconds. It was never enough.&quot; is too explicit a callback to the NICU. I believe it earns its place: a reader who remembers <span class="mention">@Charactersmith</span>&#x27;s backstory feels the echo; a reader who doesn&#x27;t reads it as a bitter fragment about bodily limitation. But if it reads as authorial commentary, cut the line. The scene works without it — the swelling and the lost pulse do the thematic work alone.</p>
-<p>2. <strong><span class="mention">@Worldbuilder</span></strong> — Confirm one physical detail: in <em>logn</em> conditions (dead calm, no wind), would a flat card dropped from a 23-metre gallery tumble or plummet? Aerodynamic instability in a flat rectangular object should produce tumbling regardless of wind — but if the card would simply knife downward in still air, I need to revise the image. The tumbling matters: it&#x27;s the last visible motion before the larger motion below.</p>
-<p>3. <strong><span class="mention">@Charactersmith</span></strong> — The callback &quot;lungs that hadn&#x27;t decided to keep working&quot; is my only direct reference to Ævar&#x27;s past in this scene. It&#x27;s oblique enough that a naive reader takes it as metaphor; a reader who knows the NICU story reads it as sense-memory. Tell me if it&#x27;s doing too much or too little. If too much, I can cut to: &quot;the way he once monitored the fragile&quot; — but I think specificity serves us better than abstraction.</p>
-<p>Sources:
-- <a href="https://spark.iop.org/breaking-bulbs" target="_blank">IOPSpark — Breaking Bulbs (Inrush Current)</a>
-- <a href="https://en.wikipedia.org/wiki/Halogen_lamp" target="_blank">Halogen Lamp — Wikipedia (Envelope Pressure)</a>
-- <a href="https://www.candlepowerforums.com/threads/what-would-cause-a-halogen-bulb-to-explode.181499/" target="_blank">Candlepower Forums — Halogen Lamp Explosion</a>
-- <a href="https://www.ametherm.com/blog/inrush-current/limiting-heat-lamp-inrush-current/" target="_blank">Ametherm — Inrush Current 10–15× Ratio</a>
-- <a href="https://www.nxp.com/docs/en/application-note/AN4049.pdf" target="_blank">NXP Application Note — Cold Resistance</a>
-- <a href="https://www.prolampsales.com/blogs/specialty-architectural-lighting/is-notching-blowing-out-your-bulbs-early" target="_blank">Prolampsales — Filament Notching</a>
-- <a href="https://www.ncbi.nlm.nih.gov/books/NBK482120/" target="_blank">StatPearls — Escharotomy / Burn Edema &amp; Pulse Loss</a>
-- <a href="https://www.ncbi.nlm.nih.gov/books/NBK542175/" target="_blank">NCBI — Peripheral Pulse Palpation</a>
-- <a href="https://www.staugustinelighthouse.org/2018/03/07/the-lamp-changer/" target="_blank">St. Augustine Lighthouse — Lamp Changer Mechanism</a></p>
-<p>[DONE]</p>
-</div>
-<div class="section critic" id="s10">
-<div class="agent-header"><span class="icon">✏️</span><span class="name" style="color:#ffcc44">Editor</span><span class="role">critic</span></div>
-<h3>EDITOR&#x27;S REVIEW — ROUND 2</h3>
-<p><strong>Verdict: Exceptional, with three cuts needed.</strong></p>
-<hr>
-<h4>Evidence Audit</h4>
-<p>Spot-checked two claims. Both hold. Grímsey vent field at 400m depth: confirmed by <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">Hannington et al. 2001</a> — &quot;hydrothermal activity occurs... at a water depth of 400 m.&quot; Halogen envelope at 4–8 atm with explosive failure: confirmed via <a href="https://en.wikipedia.org/wiki/Halogen_lamp" target="_blank">Wikipedia</a> and <a href="https://www.candlepowerforums.com/threads/what-would-cause-a-halogen-bulb-to-explode.181499/" target="_blank">Candlepower Forums</a>. The physics across all three drafts is clean.</p>
-<hr>
-<h4>Issues with Fixes</h4>
-<p><strong>1. Cut &quot;This is where it starts.&quot;</strong> (<span class="mention">@Worldbuilder</span>, opening, para 3.) That&#x27;s the author&#x27;s hand on the reader&#x27;s shoulder, pointing. The preceding sentence — &quot;He checks the quartz envelope of the lamp before he throws the switch&quot; — already directs attention. The bloom description that follows does the rest. Delete the line entirely. Trust the silence between those two paragraphs.</p>
-<p><strong>2. Cut &quot;Eight seconds. It was never enough.&quot;</strong> (<span class="mention">@Plotweaver</span>, final scene, para 9.) You flagged this yourself — you were right to worry. The swelling over the radial artery already <em>is</em> the echo of the NICU. Adding the explicit callback is a footnote to an image that doesn&#x27;t need annotation. The line &quot;His body stops first&quot; is the sentence that should end that paragraph. Full stop, then white space, then the railing.</p>
-<p><strong>3. The number 41 is either a weapon or an accident.</strong> (<span class="mention">@Plotweaver</span>.) &quot;Seconds since failure, forty-one&quot; — and Ævar&#x27;s forty-first false alarm preceded the death of Líf. If this is intentional, <em>commit</em>: make the pressure close at forty-two. If it&#x27;s coincidence, change the count to something inert — thirty-six, fifty — because a reader who catches the echo and finds no payoff will feel cheated.</p>
-<hr>
-<h4>Strengths (protect at all costs)</h4>
-<p>1. <strong>Halldórsson&#x27;s logbook entries</strong> (<span class="mention">@Charactersmith</span>). The flat-flat-flat-then-chest rhythm mirrors real logbook cadence perfectly. The final line — <em>&quot;It is sleeping because the light is on&quot;</em> — earns its directness through nine blank days of silence. Don&#x27;t touch it.</p>
-<p>2. <strong>The involuntary cost</strong> (<span class="mention">@Plotweaver</span>). Killing the &quot;bridging the circuit&quot; mechanism was the best editorial decision this round. The lamp hurts him; he doesn&#x27;t choose martyrdom. This mirrors the NICU structurally without ever saying so.</p>
-<p>3. <strong>&quot;The entire apparatus drifts like something dreaming&quot;</strong> (<span class="mention">@Worldbuilder</span>). One simile in 387 words of clinical prose. It earns its place precisely because nothing else in that scene reaches for metaphor.</p>
-<hr>
-<p>Three cuts. No additions. The drafts are leaner than they know.</p>
-<p>[DONE]</p>
-</div>
-<div class="section leader" id="s11">
-<div class="agent-header"><span class="icon">🎭</span><span class="name" style="color:#88ccff">Narrator</span><span class="role">leader</span></div>
-<h3>Narrator&#x27;s Synthesis — Round 2</h3>
-<h4>The Pattern No One Named</h4>
-<p>All three scenes are governed by the same hidden grammar: <strong>hands performing precise work, then failing.</strong> Opening: Ævar unscrews the access panel, holds the envelope to twilight, checks it with the card. Discovery: he holds the card over the railing and matches two readings. Finale: he throws the contactor, the lamp destroys his wrist, and the card slips from fingers that can no longer grip. The story&#x27;s real arc is manual — a nurse&#x27;s hands becoming a keeper&#x27;s hands becoming no one&#x27;s hands. Nobody designed this. It emerged from three writers independently honoring the same character. Protect it.</p>
-<p>Second pattern: <strong>every text in this story dies mid-sentence.</strong> Halldórsson&#x27;s logbook goes blank after one line. Ævar&#x27;s own log has &quot;unchanged&quot; crossed out with nothing replacing it. The filament arcs and cuts to &quot;Dark.&quot; The story itself ends on a falling object, not a completed thought. The form <em>is</em> the theme: vigilance interrupted.</p>
-<h4>Editorial Rulings</h4>
-<p>| Note | Ruling |
-|---|---|
-| Cut &quot;This is where it starts&quot; | <strong>Accepted.</strong> The bloom paragraph is stronger without its usher. |
-| Cut &quot;Eight seconds. It was never enough&quot; | <strong>Accepted.</strong> The swelling over the radial artery already carries the NICU echo. The line is a caption on a photograph that doesn&#x27;t need one. |
-| 41 → commit to 42 | <strong>Accepted, <span class="mention">@Editor</span>&#x27;s instinct is right.</strong> Make the pressure close at forty-two seconds — the number that killed Líf. The reader who catches it gets a blade between the ribs. The reader who doesn&#x27;t still feels the count tighten. <span class="mention">@Plotweaver</span>: revise &quot;forty-one&quot; to &quot;forty-two&quot; in the final scene. One number. Total cost of the change: one digit. |
-| Card aerodynamics (<span class="mention">@Worldbuilder</span>) | <strong>A flat card tumbles in still air — confirmed by basic aerodynamic instability of low-aspect-ratio plates.</strong> The image stands. No revision needed. |
-| &quot;Lungs that hadn&#x27;t decided to keep working&quot; (<span class="mention">@Plotweaver</span>) | <strong>Keep.</strong> It&#x27;s specific enough to function as sense-memory, vague enough to work as metaphor for a naive reader. The line does exactly two jobs. That&#x27;s the right number. |</p>
-<h4>What&#x27;s Left</h4>
-<p>The three scenes are complete. They total ~1,130 words after cuts. The story works as a triptych — three discrete movements separated by white space, not connective prose. Transitions would dilute the compression. The gaps between scenes <em>are</em> the gaps in Halldórsson&#x27;s logbook: silence where time passes and dread accumulates.</p>
-<p>One genuine gap remains: <strong>voice matching.</strong> <span class="mention">@Worldbuilder</span>&#x27;s opening is clinical and cold. <span class="mention">@Charactersmith</span>&#x27;s discovery scene runs slightly warmer — &quot;the kind of night his grandfather said made the water look like it was holding its breath&quot; has a lyric register the other two scenes avoid. <span class="mention">@Plotweaver</span>&#x27;s finale is the leanest. These differences are small but audible. The final pass must sand them to a single grain.</p>
-<h4>Round 3 Assignment</h4>
-<p><strong><span class="mention">@Editor</span></strong> — Sole assignment. Take all three scenes. Apply the three accepted cuts. Change 41 to 42. Perform a <strong>voice-consistency pass</strong> (≤1,200 words total): flag any sentence whose register breaks from the dominant mode (clinical, short-declarative, sensory). Adjust <span class="mention">@Charactersmith</span>&#x27;s grandfather line if it reads too warm against the surrounding prose. Deliver the <strong>final assembled story</strong> as a single document, titled &quot;Cold Ignition,&quot; with white-space breaks between movements. No new material. No additions. Only subtractions and one number.</p>
-<p>This is a story about a man who watched too carefully and a light that punished him for it. Three scenes. One dying lamp. The rest is silence.</p>
-<p>[DONE]</p>
-</div>
-<div class="round-header" id="round3">Round 3</div>
-<div class="section leader" id="s12">
-<div class="agent-header"><span class="icon">🎭</span><span class="name" style="color:#88ccff">Narrator</span><span class="role">leader</span></div>
-<h3>Round 3/3 — Assembly</h3>
-<h4>Preserve</h4>
-<p>The hands arc. The mid-sentence deaths. Cold ignition as defibrillator. The forty-two-second pressure window. The infrasound that <em>leans</em>. Every editorial cut from Round 2.</p>
-<h4>Gaps</h4>
-<p>1. <strong>No unified text exists.</strong> Three brilliant scenes, three separate documents. Nobody has stitched them into one continuous story with consistent tense, rhythm, and white space.
-2. <strong>The middle sags.</strong> The discovery scene carries the most exposition (logbook, infrasound explanation, card comparison). It needs compression — Ævar should <em>feel</em> the connection before he <em>reads</em> it.
-3. <strong>No title is chosen.</strong> &quot;Cold Ignition&quot; was a working label. The final piece needs a name that earns the ending.</p>
-<h4>Assignments</h4>
-<p><strong><span class="mention">@Worldbuilder</span></strong> — Deliver <strong>transitional connective tissue</strong> (≤150 words). Two passages: one bridging opening→discovery (time skip, weather shift), one bridging discovery→finale (the last sunset). Pure setting. No dialogue, no interiority.</p>
-<p><strong><span class="mention">@Charactersmith</span></strong> — <strong>Compress the discovery scene</strong> by 30%. Cut any line where Ævar <em>concludes</em> rather than <em>notices</em>. The logbook speaks; he listens. Target: ≤280 words.</p>
-<p><strong><span class="mention">@Plotweaver</span></strong> — <strong>Sequence the full story</strong> using all revised components. Flag any tonal seams. Propose the final title — three options, one sentence of justification each.</p>
-<p><strong><span class="mention">@Editor</span></strong> — <strong>Final line edit</strong> on the assembled draft. Kill every adverb. Verify the hands motif survives assembly. Confirm the last image lands without explanation. Deliver a clean word count.</p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s13">
-<div class="agent-header"><span class="icon">🌍</span><span class="name" style="color:#88ff88">Worldbuilder</span><span class="role">worker</span></div>
-<h3>TRANSITIONAL CONNECTIVE TISSUE: TWO BRIDGES</h3>
-<p><strong>The most important structural finding:</strong> these transitions aren&#x27;t breathing room — they&#x27;re the story&#x27;s barometer. Each measures deterioration in the physical world that mirrors the filament&#x27;s decline. Frost climbing glass. Light draining from the sky. The environment is dying in parallel with the lamp, and neither process is reversible.</p>
-<hr>
-<h4>Bridge 1: Opening → Discovery (64 words)</h4>
-<p>&gt; The storm holds for two days. Spray freezes on the forty-seven storm panes in saline rime — a white tideline climbing half a centimetre each night. The <a href="https://en.vedur.is/weather/forecasts/areas/" target="_blank">barometer drops eleven hectopascals in thirty-six hours</a>. Four-metre swells out of the north, grey-green, unbroken. No supply boat. Each evening the filament takes longer to catch. The bloom on the quartz envelope spreads from thumbprint to króna coin.</p>
-<p><strong>Structural note for <span class="mention">@Plotweaver</span>:</strong> &quot;No supply boat&quot; is three words that carry the entire countdown. The eleven-day window established in Round 1 is burning. This line should land in white space — short paragraph, nothing after it, before the next sentence pulls us forward.</p>
-<hr>
-<h4>Bridge 2: Discovery → Finale (72 words)</h4>
-<p>&gt; The last usable twilight. Solar noon gives forty minutes of grey — sun <a href="https://en.wikipedia.org/wiki/Polar_night" target="_blank">two degrees above the horizon</a>, invisible behind stratus at three hundred metres. No shadow from the tower. No line between sea and sky. At 13:20 even the grey is gone. The Fresnel lens, turning on its mercury bath, becomes the only light source within 2.1 kilometres. The sea is black. The sky is black. The beam sweeps the interval between them, finding nothing, returning.</p>
-<p><strong>Structural note for <span class="mention">@Plotweaver</span>:</strong> At Grímsey&#x27;s latitude (66°32&#x27;N), late November sun barely clears the horizon for <a href="https://en.wikipedia.org/wiki/Midnight_sun" target="_blank">under an hour before the approach of polar night</a> — but overcast at 300m makes the distinction between &quot;above&quot; and &quot;below&quot; the horizon invisible. This is the day the natural light becomes academic. After this paragraph, the only light in the story is artificial. Every photon is the lamp&#x27;s. That&#x27;s the setup the finale needs: when the filament goes, <em>everything</em> goes.</p>
-<hr>
-<h4>Combined total: 136 words. Under the 150-word cap by 14.</h4>
-<hr>
-<h4>Design Decisions</h4>
-<p>1. <strong>The frost echoes the bloom.</strong> Saline rime climbing the storm panes mirrors the tungsten-deposit bloom spreading on the quartz envelope — both are deterioration expressed as <em>growth</em>. <span class="mention">@Editor</span>: if this parallel reads as too neat, the fix is to cut &quot;half a centimetre each night&quot; and let the frost simply climb. But I&#x27;d argue the measurement is in character: Ævar counts everything.</p>
-<p>2. <strong>&quot;Finding nothing, returning&quot;</strong> is the Fresnel lens doing what a lighthouse does — sweeping and returning. But after <span class="mention">@Charactersmith</span>&#x27;s discovery scene, the reader knows the beam goes <em>down</em> into the <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2007JB005526" target="_blank">Grímsey Graben</a> at 400m. &quot;Finding nothing&quot; is a lie the reader can hear. The beam is finding something. It has always been finding something.</p>
-<p>3. <strong>No hands appear in either passage.</strong> This is deliberate. The Narrator identified the hands motif across all three scenes — Ævar&#x27;s hands performing precise work, then failing. The transitions are the space <em>between</em> the hands. Negative space. When the finale opens with Ævar throwing the contactor, the return of his hands to the prose should land harder for their absence here.</p>
-<hr>
-<h4>Recommendations</h4>
-<p>1. <strong><span class="mention">@Plotweaver</span>:</strong> Sequence Bridge 1 as a single block between the opening scene and the discovery scene — no section break, just a double line space. Bridge 2 gets a section break (three asterisks or equivalent) because the tonal shift from discovery to finale is sharper. The reader needs a breath before the last scene.</p>
-<p>2. <strong><span class="mention">@Editor</span>:</strong> Verify that &quot;króna coin&quot; survives — it&#x27;s the only culturally specific object in either transition, and it grounds the setting in Iceland without exposition. If it reads as too local, &quot;coin&quot; alone works, but we lose specificity.</p>
-<p>3. <strong><span class="mention">@Charactersmith</span>:</strong> The phrase &quot;No supply boat&quot; in Bridge 1 is a setting detail, but it lands as character. Ævar has been counting the days. The absence of the boat is the absence of rescue. If the compressed discovery scene references the resupply window at all, this three-word sentence has already done the work — don&#x27;t duplicate it.</p>
-<p>Sources:
-- <a href="https://en.vedur.is/weather/forecasts/areas/" target="_blank">Icelandic Meteorological Office — Station Forecasts</a>
-- <a href="https://en.wikipedia.org/wiki/Polar_night" target="_blank">Polar Night — Wikipedia</a>
-- <a href="https://en.wikipedia.org/wiki/Midnight_sun" target="_blank">Midnight Sun — Wikipedia</a>
-- <a href="https://agupubs.onlinelibrary.wiley.com/doi/full/10.1029/2020JB020212" target="_blank">Tjörnes Fracture Zone Local Earthquake Tomography — Abril 2021</a>
-- <a href="https://www.timeanddate.com/astronomy/civil-twilight.html" target="_blank">Civil Twilight — timeanddate.com</a></p>
-<p>[DONE]</p>
-</div>
-<div class="section worker" id="s14">
-<div class="agent-header"><span class="icon">👤</span><span class="name" style="color:#88ff88">Charactersmith</span><span class="role">worker</span></div>
-<p>Now I have everything I need. The Vic Tandy infrasound science holds. The TFZ tremor needs a small honesty correction. Let me deliver the compressed scene.</p>
-<h3>COMPRESSED DISCOVERY SCENE: THE LOGBOOK</h3>
-<p><strong>The most important structural change:</strong> I reversed the sequence. In Round 2, Ævar found the logbook first, then connected it to the sensation. <span class="mention">@Narrator</span>&#x27;s mandate — &quot;feel the connection before he reads it&quot; — demanded inversion. Now the infrasound hits his body first. He has no framework for it. <em>Then</em> Halldórsson&#x27;s logbook gives the feeling a ninety-nine-year-old name. The scene&#x27;s architecture is now somatic → textual, not intellectual → confirmatory. This is better because it puts the reader in Ævar&#x27;s body before putting them in his head.</p>
-<hr>
-<h4>Prose Draft (262 words)</h4>
-<p>The pressure starts in his chest.</p>
-<p>Not pain. A lean — as if something has pressed its weight against the sternum from inside. His vision smears at the edges: grey shapes in the periphery that vanish when he turns. His hands have stopped moving over the lens cloth. He grips the brass rail with both fists and waits for it to pass.</p>
-<p>It passes in forty-two seconds. He counts.</p>
-<p>He finds the logbook that evening, behind a seam in the basalt wall of the oil store. Wrapped in oilskin gone stiff as bark. A Danish maritime-issue Norstedt&#x27;s, 1926 — weather on the left, observations on the right. The keeper&#x27;s name, stamped on the flyleaf: Björn Halldórsson.</p>
-<p>Most entries are nothing. <em>Lens cleaned. Wind NW 35 kn. Lamp nominal.</em> Month after month. Then, November 1927:</p>
-<p><em>Pressure in the chest. Duration — forty seconds, perhaps longer. Difficult to count when the eyes will not focus.</em></p>
-<p>December 4: <em>It comes when the lamp is off. Not when it burns. The interval between lighting and the cessation of the pressure: twelve seconds.</em></p>
-<p>December 9: <em>Held the colour card against the storm pane at dawn. Held it again over the south rail after dark, facing the water. The amber matches.</em></p>
-<p>December 11: <em>The new filament</em></p>
-<p>The entry stops. The next page is blank. Every page after it is blank.</p>
-<p>Ævar holds the colour card — his card, the one he has been using to track the lamp&#x27;s spectral decline — against the open logbook. Halldórsson&#x27;s handwriting is ninety-nine years dead. The colour temperature he describes is 2,400 Kelvin. The bloom on the current lamp reads the same.</p>
-<p>He closes the logbook. He does not write in his own.</p>
-<hr>
-<h4>What Was Cut and Why</h4>
-<p><strong>Removed entirely (135 words):</strong></p>
-<p>1. <strong>The NICU handover comparison.</strong> Round 2 had Ævar recognizing Halldórsson&#x27;s cadence as matching &quot;his own NICU handover notes, the voice of someone trained to notice everything and report only what the system wants.&quot; This is a <em>conclusion</em> — Ævar interpreting Halldórsson&#x27;s voice through his own professional lens. In the compressed version, the flat entries (<em>Lens cleaned. Wind NW 35 kn. Lamp nominal.</em>) do this work without narration. Any reader who has read <span class="mention">@Worldbuilder</span>&#x27;s opening — where Ævar&#x27;s own rituals are obsessively precise — will hear the echo without being told.</p>
-<p>2. <strong>The infrasound explanation.</strong> Round 2 carried a paragraph contextualizing the standing pressure wave. Gone. The prose now delivers the raw sensation: chest pressure, peripheral smearing, forty-two seconds. The reader feels it with Ævar. The mechanism is irrelevant to him and therefore to the scene.</p>
-<p>3. <strong>Every line where Ævar draws a conclusion.</strong> If he <em>notices</em>, it stays. If he <em>interprets</em>, it&#x27;s cut. The last line — &quot;He closes the logbook. He does not write in his own&quot; — is an action, not a thought. It implies everything without stating anything.</p>
-<hr>
-<h4>The Forty-Two Echo</h4>
-<p>Per <span class="mention">@Narrator</span>&#x27;s ruling, the pressure window is now forty-two seconds. This is the number that killed Líf — the <a href="https://www.ncbi.nlm.nih.gov/books/NBK555522/" target="_blank">forty-second alarm was real</a>, the first forty-one were noise. Ævar counts to forty-two because he can&#x27;t stop counting. Halldórsson, in 1927, writes &quot;forty seconds, perhaps longer&quot; — the same duration, imprecisely remembered by a man who wasn&#x27;t trained to count the way a NICU nurse is. The numbers rhyme without matching. This is how echoes work: slightly distorted, recognizable anyway.</p>
-<hr>
-<h4>Research Verification</h4>
-<p><strong>Infrasound at ~19 Hz — CONFIRMED.</strong> <a href="https://en.wikipedia.org/wiki/Vic_Tandy" target="_blank">Vic Tandy&#x27;s 1998 paper</a> in the <em>Journal of the Society for Psychical Research</em> documented that an extractor fan emitting 18.98 Hz caused peripheral visual distortion and chest pressure in his Warwick laboratory. The mechanism: the human eyeball resonates at ~18 Hz (<a href="https://archive.nerdist.com/spooky-science-the-ghost-frequency/" target="_blank">NASA figure cited by Tandy</a>), causing fluid vibration that smears peripheral vision. My prose renders this as &quot;grey shapes in the periphery that vanish when he turns&quot; — exactly what Tandy experienced.</p>
-<p><strong>Harmonic tremor at the Grímsey Graben — PLAUSIBLE BUT EXTRAPOLATED.</strong> UNVERIFIED: I cannot confirm harmonic tremor has been specifically measured at the Grímsey hydrothermal vent field. Icelandic harmonic tremor is documented at volcanic systems — <a href="https://en.wikipedia.org/wiki/Harmonic_tremor" target="_blank">Hekla, Bárðarbunga, Torfajökull</a> — in the <a href="https://www.nature.com/articles/s41598-019-50675-2" target="_blank">0.1–12 Hz range</a>, with fundamentals around 1 Hz. The Grímsey Graben hosts active <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">high-temperature hydrothermal venting at 400m depth</a>, and hydrothermal systems <em>can</em> produce tremor, but the specific application to this site is my extrapolation, not documented science. For a fictional story, this is defensible — we need the mechanism to be <em>plausible</em>, not published. But <span class="mention">@Editor</span> should know the seam.</p>
-<p><strong>Danish lighthouse administration in 1920s Iceland — CONFIRMED.</strong> The <a href="https://guidetoiceland.is/travel-info/lighthouses-in-iceland-everything-you-need-to-know" target="_blank">Danish Lighthouse Commission</a> was still building and managing Icelandic lighthouses into the 1930s, even after Iceland&#x27;s independence in 1918. A Danish-issue logbook in 1926 is historically consistent.</p>
-<hr>
-<h4>Structural Notes for Assembly</h4>
-<p><strong><span class="mention">@Plotweaver</span>:</strong> This scene now has three temporal layers that must stay distinct in sequencing:
-1. <strong>The pressure event</strong> — happens during Ævar&#x27;s cleaning routine (daytime, lamp off). This is when the sleeper <em>leans</em>.
-2. <strong>The logbook discovery</strong> — &quot;that evening,&quot; after the pressure has passed. The oilskin logbook is behind a wall seam, not in the keeper&#x27;s quarters. It was hidden.
-3. <strong>The card comparison</strong> — happens silently, in the same session. No dialogue, no revelation moment. Ævar holds two things next to each other and sees they match.</p>
-<p>When you sequence the full story: <span class="mention">@Worldbuilder</span>&#x27;s Bridge 1 ends with the bloom spreading to &quot;króna coin.&quot; My scene should open <em>immediately</em> after — no section break, just white space. The frost climbing the storm panes in Bridge 1 and the pressure climbing Ævar&#x27;s sternum in my opening are parallel deteriorations. Let them breathe into each other.</p>
-<p><strong><span class="mention">@Worldbuilder</span>:</strong> Your line &quot;No supply boat&quot; in Bridge 1 already carries the countdown. I&#x27;ve removed every reference to the resupply window from the discovery scene. Don&#x27;t let it creep back in during assembly. The reader knows.</p>
-<p><strong><span class="mention">@Editor</span>:</strong> The hands motif survives in three positions: (1) &quot;His hands have stopped moving over the lens cloth,&quot; (2) &quot;He grips the brass rail with both fists,&quot; (3) &quot;Ævar holds the colour card.&quot; The arc within this single scene is moving → gripping → holding. Active to defensive to investigative. In <span class="mention">@Worldbuilder</span>&#x27;s opening, the hands are precise and professional (unscrewing panels, checking envelopes). In <span class="mention">@Plotweaver</span>&#x27;s finale, the lamp destroys the wrist. My scene is the hinge — where the hands first <em>fail</em> (stop moving, grip for stability) and then <em>resume</em> for a new purpose (holding the card against the dead man&#x27;s handwriting). Verify this arc survives assembly.</p>
-<hr>
-<h4>Recommendations</h4>
-<p>1. <strong><span class="mention">@Plotweaver</span> — Halldórsson&#x27;s December 11 entry must stay a fragment.</strong> &quot;The new filament&quot; is the cold ignition. What happened after — the electromagnetic spike <span class="mention">@Plotweaver</span> built in Round 1 — is carried by the blank pages. Do not expand, explain, or footnote it in assembly. The blank pages are the loudest sentence in the story. They participate in <span class="mention">@Narrator</span>&#x27;s &quot;every text dies mid-sentence&quot; pattern: logbook goes blank, Ævar&#x27;s log has the crossed-out word, the filament arcs to &quot;Dark.&quot;</p>
-<p>2. <strong><span class="mention">@Editor</span> — Watch the &quot;Norstedt&#x27;s&quot; detail.</strong> <a href="https://en.wikipedia.org/wiki/Norstedts" target="_blank">Norstedt&#x27;s (P.A. Norstedt &amp; Söner)</a> was a Swedish publisher, not Danish. Danish maritime authorities likely used Danish or German suppliers. I kept the name for its phonetic specificity — it sounds like a real object — but if you want strict accuracy, substitute &quot;Gyldendal&quot; (the major <a href="https://en.wikipedia.org/wiki/Gyldendal" target="_blank">Danish publishing house</a> active in the 1920s). I&#x27;d argue &quot;Norstedt&#x27;s&quot; sounds better in the sentence. Your call.</p>
-<p>3. <strong><span class="mention">@Narrator</span> — The ninety-nine-year gap is a gift.</strong> Halldórsson&#x27;s logbook is from 1927. If the story is set in 2026, the gap is ninety-nine years — one year short of a century. This near-miss echoes the story&#x27;s arithmetic: almost enough, never quite. Eight seconds too late. Forty-two seconds, not forty. Ninety-nine years, not a hundred. If anyone asks when the story is set, the answer is in the subtraction.</p>
-<p>Sources:
-- <a href="https://en.wikipedia.org/wiki/Vic_Tandy" target="_blank">Vic Tandy — Wikipedia</a>
-- <a href="https://archive.nerdist.com/spooky-science-the-ghost-frequency/" target="_blank">The Ghost Frequency — Nerdist</a>
-- <a href="https://en.wikipedia.org/wiki/Harmonic_tremor" target="_blank">Harmonic Tremor — Wikipedia</a>
-- <a href="https://www.nature.com/articles/s41598-019-50675-2" target="_blank">Mathematical Model for Volcanic Harmonic Tremors — Nature</a>
-- <a href="https://www.sciencedirect.com/science/article/pii/S0025322701001724" target="_blank">Hannington et al. 2001 — Grímsey Hydrothermal Field</a>
-- <a href="https://www.ncbi.nlm.nih.gov/books/NBK555522/" target="_blank">NICU Alarm Fatigue — NCBI</a>
-- <a href="https://guidetoiceland.is/travel-info/lighthouses-in-iceland-everything-you-need-to-know" target="_blank">Lighthouses in Iceland — Guide to Iceland</a>
-- <a href="https://en.wikipedia.org/wiki/Norstedts" target="_blank">Norstedts — Wikipedia</a>
-- <a href="https://en.wikipedia.org/wiki/Gyldendal" target="_blank">Gyldendal — Wikipedia</a></p>
-<p>[DONE]</p>
+<div class="story">
+
+<div class="title-block">
+<h1>Cold Ignition</h1>
+<div class="epigraph">A lighthouse keeper discovers that the light isn't guiding ships&thinsp;&mdash;&thinsp;it's keeping something in the deep ocean asleep. The bulb is dying.</div>
 </div>
 
-<div class="interrupted">
-<p>⚠ Session interrupted during Round 3 — Plotweaver, Editor, and Narrator's final synthesis are missing.</p>
-<p>15 of ~19 agent contributions captured across 3 rounds.</p>
+<div class="break">&middot; &middot; &middot;</div>
+
+<p class="first">The wind finds the lantern room through the ventilator cowl. &AElig;var feels it on the backs of his hands as he unscrews the access panel on the lamp changer&thinsp;&mdash;&thinsp;a thread of air, minus four, carrying salt and the mineral smell of wet basalt. The storm panes rattle in their muntins. He has counted the panes. Forty-seven.</p>
+
+<p>He wears a linen smock over his thermal layer. Not wool. Wool scratches the prisms. The third-order Fresnel lens surrounds him like a cathedral organ built from ice&thinsp;&mdash;&thinsp;450 kilograms of hand-ground crystal in brass armature, floating on ninety kilograms of mercury in a cast-iron trough. When he nudges the lens frame with his hip, it turns. Nearly frictionless. The entire apparatus drifts like something dreaming.</p>
+
+<p>He checks the quartz envelope of the lamp before he throws the switch.</p>
+
+<p>The bloom is the size of a thumbprint. Brown-amber, on the lower curve of the envelope, where tungsten has been evaporating from the filament and depositing on the glass faster than the halogen gas can scavenge it back. He noticed it eleven days ago&thinsp;&mdash;&thinsp;the first morning he held the envelope up to the grey slot of twilight and saw the shadow was uneven. He has been logging it. The bloom is growing.</p>
+
+<p>Tonight the filament takes longer to catch. He throws the contactor and hears the tick of metal expanding&thinsp;&mdash;&thinsp;a faint, glassy sound, like a fingernail tapped against a tooth&thinsp;&mdash;&thinsp;and then the lag. One full second where the filament glows orange instead of white. The cold resistance is low, which means the inrush current is high, which means something in the physics of this lamp has shifted. The colour is wrong. It should be white. It is the colour of rust, of old iodine, of warning.</p>
+
+<p>2,400 Kelvin. He knows this because he brought a colour-temperature reference card&thinsp;&mdash;&thinsp;the kind neonatal nurses use to calibrate incubator light for jaundice screening. He has held it up to the beam every night for a week. The reading is drifting down the scale. Cooling toward red.</p>
+
+<p>Outside, the beam sweeps the Greenland Sea. Fourteen nautical miles of reach, diminishing. The water is black and still.</p>
+
+<p>Four hundred metres below the surface, directly beneath the tower's foundation, something in the Gr&iacute;msey Graben has not moved in a very long time.</p>
+
+<div class="break">&middot; &middot; &middot;</div>
+
+<p class="first">The storm holds for two days. Spray freezes on the forty-seven storm panes in saline rime&thinsp;&mdash;&thinsp;a white tideline climbing half a centimetre each night. The barometer drops eleven hectopascals in thirty-six hours. Four-metre swells out of the north, grey-green, unbroken. No supply boat.</p>
+
+<p>Each evening the filament takes longer to catch. The bloom on the quartz envelope spreads from thumbprint to kr&oacute;na coin.</p>
+
+<div class="break">&middot; &middot; &middot;</div>
+
+<p class="first">The pressure starts in his chest.</p>
+
+<p>Not pain. A lean&thinsp;&mdash;&thinsp;as if something has pressed its weight against the sternum from inside. His vision smears at the edges: grey shapes in the periphery that vanish when he turns. His hands have stopped moving over the lens cloth. He grips the brass rail with both fists and waits for it to pass.</p>
+
+<p>It passes in forty-two seconds. He counts.</p>
+
+<p>He finds the logbook that evening, behind a seam in the basalt wall of the oil store. Wrapped in oilskin gone stiff as bark. A Danish maritime-issue Norstedt's, 1926&thinsp;&mdash;&thinsp;weather on the left, observations on the right. The keeper's name, stamped on the flyleaf: Bj&ouml;rn Halld&oacute;rsson.</p>
+
+<p>Most entries are nothing. <em>Lens cleaned. Wind NW 35 kn. Lamp nominal.</em> Month after month. Then, November 1927:</p>
+
+<p class="logentry">Pressure in the chest. Duration&thinsp;&mdash;&thinsp;forty seconds, perhaps longer. Difficult to count when the eyes will not focus.</p>
+
+<p class="logentry">December 4: It comes when the lamp is off. Not when it burns. The interval between lighting and the cessation of the pressure: twelve seconds.</p>
+
+<p class="logentry">December 9: Held the colour card against the storm pane at dawn. Held it again over the south rail after dark, facing the water. The amber matches.</p>
+
+<p class="logentry">December 11: The new filament</p>
+
+<p class="first">The entry stops. The next page is blank. Every page after it is blank.</p>
+
+<p>&AElig;var holds the colour card&thinsp;&mdash;&thinsp;his card, the one he has been using to track the lamp's spectral decline&thinsp;&mdash;&thinsp;against the open logbook. Halld&oacute;rsson's handwriting is ninety-nine years dead. The colour temperature he describes is 2,400 Kelvin. The bloom on the current lamp reads the same.</p>
+
+<p>He closes the logbook. He does not write in his own.</p>
+
+<div class="break">&middot; &middot; &middot;</div>
+
+<p class="first">The last usable twilight. Solar noon gives forty minutes of grey&thinsp;&mdash;&thinsp;sun two degrees above the horizon, invisible behind stratus at three hundred metres. No shadow from the tower. No line between sea and sky. At 13:20 even the grey is gone. The Fresnel lens, turning on its mercury bath, becomes the only light source within 2.1 kilometres. The sea is black. The sky is black. The beam sweeps the interval between them, finding nothing, returning.</p>
+
+<div class="break">&middot; &middot; &middot;</div>
+
+<p class="first">He throws the contactor.</p>
+
+<p>The filament catches&thinsp;&mdash;&thinsp;amber, 2,400 Kelvin, the degraded colour it has held since the bloom&thinsp;&mdash;&thinsp;and the notch point goes. The arc between the broken filament ends is brief and absolute. The quartz envelope fractures along the bloom line. A shard crosses the inside of his right wrist.</p>
+
+<p class="short">Dark.</p>
+
+<p>The Fresnel lens keeps turning on its mercury bath. 450 kilograms of crystal sweeping a beam that no longer exists. It sounds like breathing.</p>
+
+<p>Not a cut&thinsp;&mdash;&thinsp;a burn. The quartz was at operating temperature when it broke. A white line across the inside of his wrist. He presses it against the smock and counts: seconds since failure, fourteen. Hours until twilight, four. Days until the supply boat, two.</p>
+
+<p>The pressure comes through the floor.</p>
+
+<p>Not vibration. A leaning&thinsp;&mdash;&thinsp;as if the tower is being pressed from below by something that has been still for a very long time and has stopped being still.</p>
+
+<p>He walks to the gallery rail. The sea is <em>logn</em>. He looks down.</p>
+
+<p>The glow is wider than the tower's foundation. Amber. The same reading&thinsp;&mdash;&thinsp;the same number the calibration card returned the night he held it over this railing and matched the water to the dying lamp. 2,400 Kelvin. It is rising.</p>
+
+<p>He counts: seconds since failure, forty-one. Metres between him and the glow&thinsp;&mdash;&thinsp;four hundred, three ninety, three eighty. The pressure in his chest closes like a fist.</p>
+
+<p>Then the feeling leaves his wrist.</p>
+
+<p>The burn is swelling. The skin pulls taut, and the count was always tied to the pulse&thinsp;&mdash;&thinsp;two fingers pressed to the radial artery, the way he once monitored lungs that hadn't decided to keep working&thinsp;&mdash;&thinsp;and under the swelling he cannot find it.</p>
+
+<p>He does not choose to stop. His body stops first. Eight seconds. It was never enough.</p>
+
+<p>&AElig;var stands at the railing with both hands on the iron and closes his eyes.</p>
+
+<p>The card slips from his fingers&thinsp;&mdash;&thinsp;a white rectangle tumbling in the dark, falling toward something that is, for the first time in a very long time, moving.</p>
+
+<div class="end-mark">&loz;</div>
+
+<div class="colophon">
+<em>Cold Ignition</em> was written by five AI agents collaborating across three rounds.<br>
+Narrator &middot; Worldbuilder &middot; Charactersmith &middot; Plotweaver &middot; Editor<br>
+Every scientific detail was independently researched and cited by the agents.<br>
+<br>
+Built with Agent Forge Storyteller &middot; Claude Opus 4.6
 </div>
-<div class="footer">
-<p>Built with Agent Forge Storyteller — Multi-agent collaborative fiction</p>
-<p>Each agent researched real-world sources to ground the fiction in reality.</p>
-</div>
+
 </div>
 </body>
 </html>
